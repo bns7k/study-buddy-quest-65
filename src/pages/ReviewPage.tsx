@@ -105,7 +105,7 @@ export default function ReviewPage() {
     const info = questionMap.get(questionId);
     if (info) {
       // Find courseId and lessonId
-      for (const course of allCourses) {
+      for (const course of getAllCourses()) {
         for (const mod of course.modules) {
           for (const lesson of mod.lessons) {
             if (lesson.questions.some((q) => q.id === questionId)) {

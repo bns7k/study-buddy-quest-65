@@ -23,7 +23,7 @@ export default function ProgressPage() {
   const weekTotal = chartData.reduce((sum, d) => sum + d.xp, 0);
 
   // Course progress
-  const courseProgress = allCourses.map((course) => {
+  const courseProgress = getAllCourses().map((course) => {
     const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
     const completed = allLessonIds.filter((id) => progress.completedLessons.includes(id)).length;
     return {
