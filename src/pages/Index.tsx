@@ -10,8 +10,9 @@ import { BottomNav } from "@/components/BottomNav";
 const Index = () => {
   const { progress, getModuleProgress } = useProgress();
   const navigate = useNavigate();
+  const courses = getAllCourses();
 
-  const getCourseProgress = (course: typeof allCourses[0]) => {
+  const getCourseProgress = (course: typeof courses[0]) => {
     const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
     return getModuleProgress(allLessonIds);
   };
