@@ -52,6 +52,10 @@ export default {
           foreground: "hsl(var(--success-foreground))",
         },
         locked: "hsl(var(--locked))",
+        bonus: {
+          DEFAULT: "hsl(var(--bonus))",
+          foreground: "hsl(var(--bonus-foreground))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

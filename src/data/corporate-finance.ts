@@ -1,5 +1,5 @@
 import { Course } from "@/types/course";
-
+import { bonusModuleAfterWeek3, bonusModuleAfterWeek6, bonusModuleAfterWeek9, bonusModuleAfterWeek12 } from "./bonus-modules";
 export const corporateFinanceCourse: Course = {
   id: "corporate-finance",
   title: "Corporate Finance",
@@ -87,6 +87,7 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek3,
     {
       id: "week-4",
       weekNumber: 4,
@@ -148,6 +149,7 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek6,
     {
       id: "week-7",
       weekNumber: 7,
@@ -199,6 +201,7 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek9,
     {
       id: "week-11",
       weekNumber: 11,
@@ -250,5 +253,6 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek12,
   ],
 };
