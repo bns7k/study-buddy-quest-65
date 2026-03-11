@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Settings } from "lucide-react";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
 import { allCourses } from "@/data/courses";
@@ -27,6 +27,9 @@ const Index = () => {
             <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
+          <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
+            <Settings className="h-5 w-5 text-muted-foreground" />
+          </button>
         </div>
       </header>
 

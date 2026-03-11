@@ -11,6 +11,8 @@ import ProgressPage from "./pages/ProgressPage.tsx";
 import AchievementsPage from "./pages/AchievementsPage.tsx";
 import ExamModePage from "./pages/ExamModePage.tsx";
 import ReviewPage from "./pages/ReviewPage.tsx";
+import SettingsPage from "./pages/SettingsPage.tsx";
+import AIImportPage from "./pages/AIImportPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/course/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
           <Route path="/course/:courseId/exam" element={<ExamModePage />} />
           <Route path="/review" element={<ReviewPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/ai-import" element={<AIImportPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="*" element={<NotFound />} />
