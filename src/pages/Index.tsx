@@ -18,7 +18,7 @@ const Index = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <span className="text-lg font-black text-foreground">FinLearn</span>
+            <span className="text-lg font-black text-foreground">​BME Finance fast track        </span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
         </div>
@@ -29,8 +29,8 @@ const Index = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+          className="mb-8">
+          
           <div className="text-4xl mb-2">{course.emoji}</div>
           <h1 className="text-2xl font-black text-foreground md:text-3xl">{course.title}</h1>
           <p className="mt-1 text-muted-foreground">{course.description}</p>
@@ -43,9 +43,9 @@ const Index = () => {
             const moduleProg = getModuleProgress(lessonIds);
             // Unlock logic: first module always unlocked, others need previous module complete
             const prevModule = index > 0 ? course.modules[index - 1] : null;
-            const prevComplete = prevModule
-              ? getModuleProgress(prevModule.lessons.map((l) => l.id)) === 100
-              : true;
+            const prevComplete = prevModule ?
+            getModuleProgress(prevModule.lessons.map((l) => l.id)) === 100 :
+            true;
             const isUnlocked = index === 0 || prevComplete;
 
             return (
@@ -54,14 +54,14 @@ const Index = () => {
                 module={module}
                 index={index}
                 progressPercent={moduleProg}
-                isUnlocked={isUnlocked}
-              />
-            );
+                isUnlocked={isUnlocked} />);
+
+
           })}
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
