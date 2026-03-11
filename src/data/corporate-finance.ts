@@ -87,6 +87,7 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek3,
     {
       id: "week-4",
       weekNumber: 4,
