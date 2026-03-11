@@ -3,7 +3,7 @@ import { GraduationCap, Zap, Flame, Trophy, TrendingUp, BookOpen } from "lucide-
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
-import { allCourses } from "@/data/courses";
+import { getAllCourses } from "@/data/courses";
 import { Progress } from "@/components/ui/progress";
 import { BottomNav } from "@/components/BottomNav";
 
