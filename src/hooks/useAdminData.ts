@@ -231,7 +231,7 @@ export function useAdminData() {
     data,
     stats,
     addCourse, updateCourse, deleteCourse,
-    addModule, updateModule, deleteModule, reorderModules,
+    addModule, updateModule, deleteModule, reorderModules, reorderLessons,
     addLesson, updateLesson, deleteLesson,
     addQuestion, updateQuestion, deleteQuestion,
     resetToDefaults,
