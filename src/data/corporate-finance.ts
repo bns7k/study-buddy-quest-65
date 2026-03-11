@@ -201,6 +201,7 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek9,
     {
       id: "week-11",
       weekNumber: 11,
