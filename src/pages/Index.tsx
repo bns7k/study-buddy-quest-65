@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Settings } from "lucide-react";
+import { GraduationCap, Settings, Shield } from "lucide-react";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
 import { allCourses } from "@/data/courses";
