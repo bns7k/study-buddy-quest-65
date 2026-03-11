@@ -6,6 +6,7 @@ import { StatsBar } from "@/components/StatsBar";
 import { ModuleCard } from "@/components/ModuleCard";
 import { useProgress } from "@/hooks/useProgress";
 import { getCourseById } from "@/data/courses";
+import { BottomNav } from "@/components/BottomNav";
 
 export default function CoursePage() {
   const { courseId } = useParams();
@@ -16,7 +17,7 @@ export default function CoursePage() {
   if (!course) return <div className="p-8 text-center text-muted-foreground">Course not found</div>;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
@@ -29,7 +30,7 @@ export default function CoursePage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-4 py-6 pb-20">
+      <main className="mx-auto max-w-2xl px-4 py-6">
         <Button variant="ghost" onClick={() => navigate("/")} className="mb-4 gap-2 rounded-xl font-bold text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> All Courses
         </Button>
@@ -63,6 +64,8 @@ export default function CoursePage() {
           })}
         </div>
       </main>
+
+      <BottomNav />
     </div>
   );
 }

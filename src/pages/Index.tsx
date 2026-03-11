@@ -5,6 +5,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { allCourses } from "@/data/courses";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
+import { BottomNav } from "@/components/BottomNav";
 
 const Index = () => {
   const { progress, getModuleProgress } = useProgress();
@@ -16,7 +17,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
@@ -29,7 +30,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-4 py-6 pb-20">
+      <main className="mx-auto max-w-2xl px-4 py-6">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-2xl font-black text-foreground md:text-3xl">Your Courses</h1>
           <p className="mt-1 text-muted-foreground">Choose a course to start learning</p>
@@ -70,6 +71,8 @@ const Index = () => {
           })}
         </div>
       </main>
+
+      <BottomNav />
     </div>
   );
 };
