@@ -16,6 +16,27 @@ export default function CoursePage() {
   const course = getCourseById(courseId || "");
   if (!course) return <div className="p-8 text-center text-muted-foreground">Course not found</div>;
 
+  // Determine unlock status for each module
+  // Bonus modules: unlocked when the preceding mandatory module is complete, but don't block the next mandatory module
+  const mandatoryModules = course.modules.filter((m) => !m.isBonus);
+
+  const getUnlockStatus = (module: typeof course.modules[number], index: number) => {
+    if (index === 0) return true;
+
+    if (module.isBonus) {
+      // Bonus module is unlocked when the mandatory module right before it is complete
+      const prevMandatory = course.modules.slice(0, index).filter((m) => !m.isBonus).pop();
+      if (!prevMandatory) return true;
+      return getModuleProgress(prevMandatory.lessons.map((l) => l.id)) === 100;
+    }
+
+    // Mandatory module: unlocked when the previous mandatory module is complete
+    const mandatoryIndex = mandatoryModules.indexOf(module);
+    if (mandatoryIndex <= 0) return true;
+    const prevMandatory = mandatoryModules[mandatoryIndex - 1];
+    return getModuleProgress(prevMandatory.lessons.map((l) => l.id)) === 100;
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
@@ -62,11 +83,7 @@ export default function CoursePage() {
           {course.modules.map((module, index) => {
             const lessonIds = module.lessons.map((l) => l.id);
             const moduleProg = getModuleProgress(lessonIds);
-            const prevModule = index > 0 ? course.modules[index - 1] : null;
-            const prevComplete = prevModule
-              ? getModuleProgress(prevModule.lessons.map((l) => l.id)) === 100
-              : true;
-            const isUnlocked = index === 0 || prevComplete;
+            const isUnlocked = getUnlockStatus(module, index);
 
             return (
               <ModuleCard
