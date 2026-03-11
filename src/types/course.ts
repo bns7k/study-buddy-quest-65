@@ -34,6 +34,7 @@ export interface Module {
   description?: string;
   learningObjectives?: string[];
   lessons: Lesson[];
+  isBonus?: boolean;
 }
 
 export interface Course {
