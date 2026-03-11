@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, GraduationCap, Target, Lock, Trophy } from "lucide-react";
+import { ArrowLeft, GraduationCap, Target, Lock, Trophy, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LessonCard } from "@/components/LessonCard";
 import { StatsBar } from "@/components/StatsBar";
