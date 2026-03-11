@@ -75,6 +75,23 @@ export function useAdminData() {
     }));
   }, []);
 
+  const reorderLessons = useCallback((courseId: string, moduleId: string, lessonIds: string[]) => {
+    setData((prev) => ({
+      courses: prev.courses.map((c) =>
+        c.id === courseId
+          ? {
+              ...c,
+              modules: c.modules.map((m) => {
+                if (m.id !== moduleId) return m;
+                const sorted = lessonIds.map((id) => m.lessons.find((l) => l.id === id)!).filter(Boolean);
+                return { ...m, lessons: sorted };
+              }),
+            }
+          : c
+      ),
+    }));
+  }, []);
+
   // ── Lessons ──
   const addLesson = useCallback((courseId: string, moduleId: string, lesson: Lesson) => {
     setData((prev) => ({
@@ -214,7 +231,7 @@ export function useAdminData() {
     data,
     stats,
     addCourse, updateCourse, deleteCourse,
-    addModule, updateModule, deleteModule, reorderModules,
+    addModule, updateModule, deleteModule, reorderModules, reorderLessons,
     addLesson, updateLesson, deleteLesson,
     addQuestion, updateQuestion, deleteQuestion,
     resetToDefaults,
