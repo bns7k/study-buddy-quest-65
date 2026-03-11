@@ -17,7 +17,7 @@ type LessonPhase = "intro" | "quiz" | "complete";
 export default function LessonPage() {
   const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
-  const { progress, completeLesson } = useProgress();
+  const { progress, completeLesson, recordAnswer } = useProgress();
   const [phase, setPhase] = useState<LessonPhase>("intro");
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number } | null>(null);
 
