@@ -30,6 +30,8 @@ const App = () => (
           <Route path="/course/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
           <Route path="/course/:courseId/exam" element={<ExamModePage />} />
           <Route path="/review" element={<ReviewPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/ai-import" element={<AIImportPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="*" element={<NotFound />} />

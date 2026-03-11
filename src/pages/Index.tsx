@@ -27,7 +27,9 @@ const Index = () => {
             <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
-        </div>
+          <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
+            <Settings className="h-5 w-5 text-muted-foreground" />
+          </button>
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6">
