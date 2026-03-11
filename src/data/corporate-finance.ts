@@ -250,5 +250,6 @@ export const corporateFinanceCourse: Course = {
         },
       ],
     },
+    bonusModuleAfterWeek12,
   ],
 };
