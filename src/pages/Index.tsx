@@ -30,6 +30,7 @@ const Index = () => {
           <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
             <Settings className="h-5 w-5 text-muted-foreground" />
           </button>
+        </div>
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6">
