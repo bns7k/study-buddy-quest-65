@@ -34,7 +34,7 @@ export default function ReviewPage() {
   // Build a map from questionId to QuizQuestion
   const questionMap = useMemo(() => {
     const map = new Map<string, { question: QuizQuestion; courseName: string; moduleName: string; lessonName: string }>();
-    allCourses.forEach((course) =>
+    getAllCourses().forEach((course) =>
       course.modules.forEach((mod) =>
         mod.lessons.forEach((lesson) =>
           lesson.questions.forEach((q) =>
