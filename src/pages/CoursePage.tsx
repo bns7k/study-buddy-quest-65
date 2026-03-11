@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, GraduationCap } from "lucide-react";
+import { ArrowLeft, GraduationCap, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsBar } from "@/components/StatsBar";
 import { ModuleCard } from "@/components/ModuleCard";
@@ -35,10 +35,27 @@ export default function CoursePage() {
           <ArrowLeft className="h-4 w-4" /> All Courses
         </Button>
 
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="text-4xl mb-2">{course.emoji}</div>
           <h1 className="text-2xl font-black text-foreground md:text-3xl">{course.title}</h1>
           <p className="mt-1 text-muted-foreground">{course.description}</p>
+        </motion.div>
+
+        {/* Exam Mode Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-6"
+        >
+          <Button
+            onClick={() => navigate(`/course/${courseId}/exam`)}
+            variant="outline"
+            className="w-full gap-2 rounded-2xl font-bold h-14 text-base border-2 border-accent/40 bg-accent/5 text-accent hover:bg-accent/10 hover:text-accent"
+          >
+            <FileText className="h-5 w-5" />
+            Exam Mode — Mock Tests & Formula Review
+          </Button>
         </motion.div>
 
         <div className="space-y-3">
