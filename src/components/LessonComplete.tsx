@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft } from "lucide-react";
+import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft, FastForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allBadges } from "@/data/badges";
 import { UserProgress } from "@/types/course";
@@ -12,6 +12,8 @@ interface LessonCompleteProps {
   progress: UserProgress;
   previousBadgeCount: number;
   onNextLesson?: () => void;
+  onNextModule?: () => void;
+  nextModuleName?: string;
   onRetry: () => void;
   onBackToModule: () => void;
 }
@@ -24,6 +26,8 @@ export function LessonComplete({
   progress,
   previousBadgeCount,
   onNextLesson,
+  onNextModule,
+  nextModuleName,
   onRetry,
   onBackToModule,
 }: LessonCompleteProps) {
@@ -102,6 +106,11 @@ export function LessonComplete({
         {onNextLesson && (
           <Button onClick={onNextLesson} className="w-full gap-2 rounded-xl font-bold h-12 text-base">
             Next Lesson <ArrowRight className="h-4 w-4" />
+          </Button>
+        )}
+        {!onNextLesson && onNextModule && (
+          <Button onClick={onNextModule} className="w-full gap-2 rounded-xl font-bold h-12 text-base bg-accent text-accent-foreground hover:bg-accent/90">
+            <FastForward className="h-4 w-4" /> Next Module{nextModuleName ? `: ${nextModuleName}` : ""}
           </Button>
         )}
         <div className="flex gap-2">

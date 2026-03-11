@@ -22,13 +22,13 @@ export default function LessonPage() {
   const [quizResult, setQuizResult] = useState<{ correct: number; total: number } | null>(null);
 
   const course = getCourseById(courseId || "");
-  const module = course?.modules.find((m) => m.id === moduleId);
+  const moduleIndex = course?.modules.findIndex((m) => m.id === moduleId) ?? -1;
+  const module = course?.modules[moduleIndex];
   const lesson = module?.lessons.find((l) => l.id === lessonId);
 
   // Count badges before completion for detecting new ones
   const previousBadgeCount = useMemo(
     () => allBadges.filter((b) => b.condition(progress)).length,
-    // Only compute on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -37,9 +37,15 @@ export default function LessonPage() {
 
   const xpReward = getLessonXpReward(lesson);
 
-  // Find next lesson
+  // Find next lesson in current module
   const currentLessonIndex = module.lessons.findIndex((l) => l.id === lessonId);
   const nextLesson = currentLessonIndex < module.lessons.length - 1 ? module.lessons[currentLessonIndex + 1] : null;
+
+  // Find next module (when this is the last lesson)
+  const isLastLesson = currentLessonIndex === module.lessons.length - 1;
+  const nextModule = isLastLesson && moduleIndex < course.modules.length - 1
+    ? course.modules[moduleIndex + 1]
+    : null;
 
   const handleQuizComplete = (correct: number, total: number) => {
     completeLesson(lesson.id, correct, total);
@@ -60,12 +66,16 @@ export default function LessonPage() {
     }
   };
 
-  // Minimalist lesson player header
+  const handleNextModule = () => {
+    if (nextModule) {
+      navigate(`/course/${courseId}/module/${nextModule.id}`);
+    }
+  };
+
   const showMinimalHeader = phase === "quiz";
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Minimal focus header for quiz mode */}
       {showMinimalHeader ? (
         <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
@@ -130,6 +140,8 @@ export default function LessonPage() {
             progress={progress}
             previousBadgeCount={previousBadgeCount}
             onNextLesson={nextLesson ? handleNextLesson : undefined}
+            onNextModule={nextModule ? handleNextModule : undefined}
+            nextModuleName={nextModule?.title}
             onRetry={handleRetry}
             onBackToModule={() => navigate(`/course/${courseId}/module/${moduleId}`)}
           />
