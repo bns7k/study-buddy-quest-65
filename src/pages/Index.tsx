@@ -46,7 +46,7 @@ const Index = () => {
         </motion.div>
 
         <div className="space-y-4">
-          {allCourses.map((course, index) => {
+          {courses.map((course, index) => {
             const courseProg = getCourseProgress(course);
             return (
               <motion.div
