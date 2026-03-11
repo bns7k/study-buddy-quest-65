@@ -224,7 +224,7 @@ export function useAdminData() {
   };
 
   const resetToDefaults = useCallback(() => {
-    setData({ courses: structuredClone(allCourses) });
+    setData({ courses: structuredClone(defaultCourses) });
   }, []);
 
   return {
