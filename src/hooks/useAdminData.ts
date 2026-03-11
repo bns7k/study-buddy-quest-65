@@ -13,7 +13,7 @@ function loadAdminData(): AdminData {
     const stored = localStorage.getItem(ADMIN_KEY);
     if (stored) return JSON.parse(stored);
   } catch {}
-  return { courses: structuredClone(allCourses) };
+  return { courses: structuredClone(defaultCourses) };
 }
 
 export function useAdminData() {
