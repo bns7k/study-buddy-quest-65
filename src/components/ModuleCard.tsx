@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 interface ModuleCardProps {
   module: Module;
+  courseId: string;
   index: number;
   progressPercent: number;
   isUnlocked: boolean;
 }
 
-export function ModuleCard({ module, index, progressPercent, isUnlocked }: ModuleCardProps) {
+export function ModuleCard({ module, courseId, index, progressPercent, isUnlocked }: ModuleCardProps) {
   const navigate = useNavigate();
   const isComplete = progressPercent === 100;
 
@@ -27,7 +28,7 @@ export function ModuleCard({ module, index, progressPercent, isUnlocked }: Modul
           ? "border-primary/20 bg-card hover:border-primary/50 hover:shadow-lg"
           : "border-border bg-muted/50 opacity-60 cursor-not-allowed"
       }`}
-      onClick={() => isUnlocked && navigate(`/module/${module.id}`)}
+      onClick={() => isUnlocked && navigate(`/course/${courseId}/module/${module.id}`)}
       whileHover={isUnlocked ? { scale: 1.01 } : {}}
       whileTap={isUnlocked ? { scale: 0.99 } : {}}
     >
