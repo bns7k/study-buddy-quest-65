@@ -48,10 +48,12 @@ export default function ModulePage() {
         </Button>
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs font-bold uppercase tracking-wider text-primary">Week {module.weekNumber}</p>
+          <p className={`text-xs font-bold uppercase tracking-wider ${module.isBonus ? "text-bonus" : "text-primary"}`}>
+            {module.isBonus ? "⭐ Hands-on Project" : `Week ${module.weekNumber}`}
+          </p>
           <h1 className="text-2xl font-black text-foreground">{module.title}</h1>
           <div className="mt-3 flex items-center gap-3">
-            <Progress value={moduleProg} className="h-2.5 flex-1" />
+            <Progress value={moduleProg} className={`h-2.5 flex-1 ${module.isBonus ? "[&>div]:bg-bonus" : ""}`} />
             <span className="text-sm font-bold text-muted-foreground">{moduleProg}%</span>
           </div>
         </motion.div>
