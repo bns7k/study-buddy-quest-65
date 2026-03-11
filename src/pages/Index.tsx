@@ -27,9 +27,14 @@ const Index = () => {
             <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
-          <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
-            <Settings className="h-5 w-5 text-muted-foreground" />
-          </button>
+          <div className="flex gap-1">
+            <button onClick={() => navigate("/admin")} className="rounded-xl p-1.5 hover:bg-muted">
+              <Shield className="h-5 w-5 text-muted-foreground" />
+            </button>
+            <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
+              <Settings className="h-5 w-5 text-muted-foreground" />
+            </button>
+          </div>
         </div>
       </header>
 
