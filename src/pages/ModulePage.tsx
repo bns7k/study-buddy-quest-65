@@ -118,7 +118,7 @@ export default function ModulePage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success text-success-foreground">
                 <Trophy className="h-6 w-6" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="font-extrabold text-foreground">Module Complete! 🎉</h3>
                 <p className="text-sm text-muted-foreground">
                   {nextModule
@@ -140,6 +140,14 @@ export default function ModulePage() {
                 </p>
               </div>
             </div>
+          )}
+          {isModuleComplete && nextModule && (
+            <Button
+              onClick={() => navigate(`/course/${courseId}/module/${nextModule.id}`)}
+              className="mt-4 w-full gap-2 rounded-xl font-bold h-12 text-base"
+            >
+              Go to Week {nextModule.weekNumber}: {nextModule.title} <Sparkles className="h-4 w-4" />
+            </Button>
           )}
         </motion.div>
       </main>

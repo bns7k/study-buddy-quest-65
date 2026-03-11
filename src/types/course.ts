@@ -1,5 +1,7 @@
 export type LessonType = "concept" | "quiz" | "practice" | "recap";
 
+export type QuestionType = "multiple_choice" | "true_false" | "match_pairs" | "fill_blank" | "order_steps" | "numeric" | "flashcard";
+
 export interface ConceptCard {
   title: string;
   content: string;
@@ -7,12 +9,30 @@ export interface ConceptCard {
   example?: string;
 }
 
+export interface MatchPair {
+  term: string;
+  definition: string;
+}
+
 export interface QuizQuestion {
   id: string;
   question: string;
+  questionType?: QuestionType; // defaults to "multiple_choice"
+  // Multiple choice / True-False
   options: string[];
   correctIndex: number;
   explanation: string;
+  // Match pairs
+  matchPairs?: MatchPair[];
+  // Fill in the blank
+  blankAnswer?: string;
+  // Order steps
+  correctOrder?: string[];
+  // Numeric input
+  numericAnswer?: number;
+  numericTolerance?: number; // e.g. 0.01 means ±0.01
+  // Flashcard
+  flashcardBack?: string;
 }
 
 export interface Lesson {
@@ -53,7 +73,7 @@ export interface QuestionRecord {
   correctCount: number;
   lastReviewDate: string;
   nextReviewDate: string;
-  interval: number; // days until next review
+  interval: number;
   mastered: boolean;
 }
 
