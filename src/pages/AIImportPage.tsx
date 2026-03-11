@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import type { Lesson, QuizQuestion, ConceptCard } from "@/types/course";
 
 type ImportStep = "upload" | "parsing" | "preview" | "edit" | "saved";
