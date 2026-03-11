@@ -6,18 +6,19 @@ import { Button } from "@/components/ui/button";
 import { QuizView } from "@/components/QuizView";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
-import { corporateFinanceCourse } from "@/data/corporate-finance";
+import { getCourseById } from "@/data/courses";
 
 export default function LessonPage() {
-  const { moduleId, lessonId } = useParams();
+  const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
   const { progress, completeLesson } = useProgress();
   const [showQuiz, setShowQuiz] = useState(false);
 
-  const module = corporateFinanceCourse.modules.find((m) => m.id === moduleId);
+  const course = getCourseById(courseId || "");
+  const module = course?.modules.find((m) => m.id === moduleId);
   const lesson = module?.lessons.find((l) => l.id === lessonId);
 
-  if (!module || !lesson) return <div className="p-8 text-center text-muted-foreground">Lesson not found</div>;
+  if (!course || !module || !lesson) return <div className="p-8 text-center text-muted-foreground">Lesson not found</div>;
 
   const handleQuizComplete = (correct: number, total: number) => {
     completeLesson(lesson.id, correct, total);
@@ -31,7 +32,7 @@ export default function LessonPage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <span className="text-lg font-black text-foreground">FinLearn</span>
+            <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
         </div>
@@ -40,7 +41,7 @@ export default function LessonPage() {
       <main className="mx-auto max-w-2xl px-4 py-6 pb-20">
         <Button
           variant="ghost"
-          onClick={() => navigate(`/module/${moduleId}`)}
+          onClick={() => navigate(`/course/${courseId}/module/${moduleId}`)}
           className="mb-4 gap-2 rounded-xl font-bold text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" /> Back to Module

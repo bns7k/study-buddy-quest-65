@@ -1,21 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LessonCard } from "@/components/LessonCard";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
-import { corporateFinanceCourse } from "@/data/corporate-finance";
+import { getCourseById } from "@/data/courses";
 import { Progress } from "@/components/ui/progress";
-import { GraduationCap } from "lucide-react";
 
 export default function ModulePage() {
-  const { moduleId } = useParams();
+  const { courseId, moduleId } = useParams();
   const navigate = useNavigate();
   const { progress, isLessonCompleted, getLessonScore, getModuleProgress } = useProgress();
 
-  const module = corporateFinanceCourse.modules.find((m) => m.id === moduleId);
-  if (!module) return <div className="p-8 text-center text-muted-foreground">Module not found</div>;
+  const course = getCourseById(courseId || "");
+  const module = course?.modules.find((m) => m.id === moduleId);
+  if (!course || !module) return <div className="p-8 text-center text-muted-foreground">Module not found</div>;
 
   const lessonIds = module.lessons.map((l) => l.id);
   const moduleProg = getModuleProgress(lessonIds);
@@ -28,14 +28,14 @@ export default function ModulePage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <GraduationCap className="h-5 w-5" />
             </div>
-            <span className="text-lg font-black text-foreground">FinLearn</span>
+            <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
         </div>
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6 pb-20">
-        <Button variant="ghost" onClick={() => navigate("/")} className="mb-4 gap-2 rounded-xl font-bold text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" onClick={() => navigate(`/course/${courseId}`)} className="mb-4 gap-2 rounded-xl font-bold text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> Back to Course
         </Button>
 
@@ -53,6 +53,7 @@ export default function ModulePage() {
             <LessonCard
               key={lesson.id}
               lesson={lesson}
+              courseId={courseId!}
               moduleId={module.id}
               index={index}
               isCompleted={isLessonCompleted(lesson.id)}

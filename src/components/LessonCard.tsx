@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 interface LessonCardProps {
   lesson: Lesson;
+  courseId: string;
   moduleId: string;
   index: number;
   isCompleted: boolean;
   score: number | null;
 }
 
-export function LessonCard({ lesson, moduleId, index, isCompleted, score }: LessonCardProps) {
+export function LessonCard({ lesson, courseId, moduleId, index, isCompleted, score }: LessonCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -24,7 +25,7 @@ export function LessonCard({ lesson, moduleId, index, isCompleted, score }: Less
           ? "border-success/30 bg-success/5 hover:border-success/50"
           : "border-border bg-card hover:border-primary/40"
       }`}
-      onClick={() => navigate(`/module/${moduleId}/lesson/${lesson.id}`)}
+      onClick={() => navigate(`/course/${courseId}/module/${moduleId}/lesson/${lesson.id}`)}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
     >
