@@ -13,6 +13,12 @@ import ExamModePage from "./pages/ExamModePage.tsx";
 import ReviewPage from "./pages/ReviewPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import AIImportPage from "./pages/AIImportPage.tsx";
+import AdminLayout from "./components/AdminLayout.tsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
+import SubjectsAdmin from "./pages/admin/SubjectsAdmin.tsx";
+import ModulesAdmin from "./pages/admin/ModulesAdmin.tsx";
+import LessonsAdmin from "./pages/admin/LessonsAdmin.tsx";
+import QuestionsAdmin from "./pages/admin/QuestionsAdmin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
