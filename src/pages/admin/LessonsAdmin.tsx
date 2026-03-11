@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, FileText } from "lucide-react";
+import { useState, useCallback } from "react";
+import { motion, Reorder } from "framer-motion";
+import { Plus, Pencil, Trash2, GripVertical, FileText } from "lucide-react";
 import { useAdminData } from "@/hooks/useAdminData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +26,7 @@ const LESSON_TYPES: { value: LessonType; label: string }[] = [
 ];
 
 const LessonsAdmin = () => {
-  const { data, addLesson, updateLesson, deleteLesson } = useAdminData();
+  const { data, addLesson, updateLesson, deleteLesson, reorderLessons } = useAdminData();
   const [selectedCourse, setSelectedCourse] = useState(data.courses[0]?.id || "");
   const [selectedModule, setSelectedModule] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -72,24 +72,26 @@ const LessonsAdmin = () => {
     setDialogOpen(false);
   };
 
+  const handleReorder = useCallback((newOrder: Lesson[]) => {
+    if (!selectedCourse || !selectedModule) return;
+    reorderLessons(selectedCourse, selectedModule, newOrder.map((l) => l.id));
+  }, [selectedCourse, selectedModule, reorderLessons]);
+
   return (
     <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-2xl font-black text-foreground">Lessons</h1>
-          <p className="text-sm text-muted-foreground mt-1">{lessons.length} lessons in selected module</p>
+          <p className="text-sm text-muted-foreground mt-1">{lessons.length} lessons · drag to reorder</p>
         </motion.div>
         <Button onClick={openNew} className="gap-1.5" disabled={!selectedModule}>
           <Plus className="h-4 w-4" /> New Lesson
         </Button>
       </div>
 
-      {/* Filters */}
       <div className="mt-4 flex flex-wrap gap-3">
         <Select value={selectedCourse} onValueChange={(v) => { setSelectedCourse(v); setSelectedModule(""); }}>
-          <SelectTrigger className="w-56">
-            <SelectValue placeholder="Select subject" />
-          </SelectTrigger>
+          <SelectTrigger className="w-56"><SelectValue placeholder="Select subject" /></SelectTrigger>
           <SelectContent>
             {data.courses.map((c) => (
               <SelectItem key={c.id} value={c.id}>{c.emoji} {c.title}</SelectItem>
@@ -97,9 +99,7 @@ const LessonsAdmin = () => {
           </SelectContent>
         </Select>
         <Select value={selectedModule} onValueChange={setSelectedModule}>
-          <SelectTrigger className="w-64">
-            <SelectValue placeholder="Select module" />
-          </SelectTrigger>
+          <SelectTrigger className="w-64"><SelectValue placeholder="Select module" /></SelectTrigger>
           <SelectContent>
             {modules.map((m) => (
               <SelectItem key={m.id} value={m.id}>
@@ -110,52 +110,56 @@ const LessonsAdmin = () => {
         </Select>
       </div>
 
-      <div className="mt-6 space-y-2">
-        {lessons.map((lesson, i) => (
-          <motion.div key={lesson.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>
-            <Card>
-              <CardContent className="flex items-center gap-3 p-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-sm">
-                  {LESSON_TYPES.find((t) => t.value === lesson.type)?.label.split(" ")[0] || "📘"}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-foreground truncate">{lesson.title}</h3>
-                  <div className="mt-1 flex gap-1.5">
-                    <Badge variant="secondary" className="text-[10px]">{lesson.type || "concept"}</Badge>
-                    {lesson.duration && <Badge variant="outline" className="text-[10px]">{lesson.duration} min</Badge>}
-                    {lesson.xpReward && <Badge variant="outline" className="text-[10px]">{lesson.xpReward} XP</Badge>}
-                    <Badge variant="outline" className="text-[10px]">{lesson.questions.length} Q</Badge>
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(lesson)}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                        <Trash2 className="h-3.5 w-3.5" />
+      <div className="mt-6">
+        {lessons.length > 0 ? (
+          <Reorder.Group axis="y" values={lessons} onReorder={handleReorder} className="space-y-2">
+            {lessons.map((lesson) => (
+              <Reorder.Item key={lesson.id} value={lesson} className="list-none">
+                <Card className="cursor-grab active:cursor-grabbing">
+                  <CardContent className="flex items-center gap-3 p-3">
+                    <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-sm">
+                      {LESSON_TYPES.find((t) => t.value === lesson.type)?.label.split(" ")[0] || "📘"}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-bold text-foreground truncate">{lesson.title}</h3>
+                      <div className="mt-1 flex gap-1.5">
+                        <Badge variant="secondary" className="text-[10px]">{lesson.type || "concept"}</Badge>
+                        {lesson.duration && <Badge variant="outline" className="text-[10px]">{lesson.duration} min</Badge>}
+                        {lesson.xpReward && <Badge variant="outline" className="text-[10px]">{lesson.xpReward} XP</Badge>}
+                        <Badge variant="outline" className="text-[10px]">{lesson.questions.length} Q</Badge>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(lesson)}>
+                        <Pencil className="h-3.5 w-3.5" />
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete "{lesson.title}"?</AlertDialogTitle>
-                        <AlertDialogDescription>This will delete all questions in this lesson.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteLesson(selectedCourse, selectedModule, lesson.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-        {lessons.length === 0 && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete "{lesson.title}"?</AlertDialogTitle>
+                            <AlertDialogDescription>This will delete all questions in this lesson.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deleteLesson(selectedCourse, selectedModule, lesson.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Reorder.Item>
+            ))}
+          </Reorder.Group>
+        ) : (
           <div className="flex flex-col items-center gap-3 py-16 text-center">
             <FileText className="h-10 w-10 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">

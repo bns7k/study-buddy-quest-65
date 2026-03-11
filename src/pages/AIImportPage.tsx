@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Upload, FileText, Sparkles, Eye, Pencil, Save, ChevronRight, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Upload, FileText, Sparkles, Eye, Pencil, Save, Loader2, AlertCircle, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,11 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAdminData } from "@/hooks/useAdminData";
+import { parseTextToContent } from "@/lib/ai-parser";
 import type { Lesson, QuizQuestion, ConceptCard } from "@/types/course";
+import { toast } from "sonner";
 
 type ImportStep = "upload" | "parsing" | "preview" | "edit" | "saved";
 
@@ -20,78 +24,112 @@ interface GeneratedContent {
   lessons: Lesson[];
 }
 
-const MOCK_GENERATED: GeneratedContent = {
-  moduleSummary: "This module covers the fundamentals of equity valuation, including discounted cash flow analysis, comparable company analysis, and precedent transactions. Students will learn to apply these methods to real-world scenarios.",
-  lessons: [
-    {
-      id: "ai-gen-1",
-      title: "Introduction to Equity Valuation",
-      type: "concept",
-      duration: 8,
-      xpReward: 30,
-      explanation: "Learn the three pillars of equity valuation and when to apply each method.",
-      learningObjectives: ["Understand DCF fundamentals", "Compare valuation methods", "Identify appropriate use cases"],
-      conceptCards: [
-        { title: "Intrinsic Value", content: "The true worth of a company based on its expected future cash flows, discounted to present value." },
-        { title: "Relative Valuation", content: "Comparing a company's valuation multiples (P/E, EV/EBITDA) to similar companies." },
-      ],
-      questions: [
-        {
-          id: "ai-q-1",
-          question: "Which valuation method relies on future cash flow projections?",
-          options: ["Comparable Company Analysis", "Discounted Cash Flow", "Precedent Transactions", "Book Value"],
-          correctIndex: 1,
-          explanation: "DCF valuation is based on projecting and discounting future cash flows to their present value.",
-        },
-      ],
-    },
-    {
-      id: "ai-gen-2",
-      title: "DCF Model Building",
-      type: "practice",
-      duration: 15,
-      xpReward: 50,
-      explanation: "Build a DCF model step by step using real financial data.",
-      questions: [
-        {
-          id: "ai-q-2",
-          question: "What is the first step in building a DCF model?",
-          options: ["Calculate WACC", "Project free cash flows", "Determine terminal value", "Gather historical financials"],
-          correctIndex: 3,
-          explanation: "You must first gather and analyze historical financial data before projecting future cash flows.",
-        },
-        {
-          id: "ai-q-3",
-          question: "Which discount rate is typically used in a DCF for an entire firm?",
-          options: ["Cost of Equity", "Risk-Free Rate", "WACC", "Cost of Debt"],
-          correctIndex: 2,
-          explanation: "WACC (Weighted Average Cost of Capital) is used to discount cash flows available to all capital providers.",
-        },
-      ],
-    },
-  ],
-};
-
 const AIImportPage = () => {
   const navigate = useNavigate();
+  const { data, addModule, addLesson, addQuestion } = useAdminData();
   const [step, setStep] = useState<ImportStep>("upload");
   const [inputMode, setInputMode] = useState<"pdf" | "text">("text");
   const [pastedText, setPastedText] = useState("");
   const [fileName, setFileName] = useState("");
+  const [fileText, setFileText] = useState("");
   const [generated, setGenerated] = useState<GeneratedContent | null>(null);
+  const [expandedLesson, setExpandedLesson] = useState<string | null>(null);
+  const [targetCourse, setTargetCourse] = useState(data.courses[0]?.id || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = () => {
-    if (!pastedText.trim() && !fileName) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFileName(file.name);
+    // Read text from file (txt, md, csv)
+    if (file.type.startsWith("text/") || file.name.match(/\.(txt|md|csv|tsv)$/i)) {
+      const text = await file.text();
+      setFileText(text);
+    } else {
+      // For PDF, we extract text (basic approach)
+      setFileText("");
+      toast.info("PDF parsing is limited locally. For best results, paste your text directly.");
+    }
+  };
+
+  const handleGenerate = () => {
+    const sourceText = inputMode === "text" ? pastedText : fileText;
+    if (!sourceText.trim()) {
+      toast.error("Please provide some text content to generate from.");
+      return;
+    }
+    if (sourceText.trim().length < 50) {
+      toast.error("Please provide at least 50 characters for meaningful content generation.");
+      return;
+    }
+
     setStep("parsing");
-    // Simulate AI parsing
+
+    // Simulate slight delay for UX, then parse
     setTimeout(() => {
-      setGenerated(MOCK_GENERATED);
-      setStep("preview");
-    }, 2500);
+      try {
+        const result = parseTextToContent(sourceText);
+        setGenerated(result);
+        setStep("preview");
+        toast.success(`Generated ${result.lessons.length} lessons with ${result.lessons.reduce((a, l) => a + l.questions.length, 0)} questions!`);
+      } catch {
+        toast.error("Failed to parse content. Try restructuring your text with headings.");
+        setStep("upload");
+      }
+    }, 1500);
   };
 
   const handleSave = () => {
+    if (!generated || !targetCourse) {
+      toast.error("Select a target course first.");
+      return;
+    }
+
+    // Create a new module with generated lessons
+    const moduleId = `mod-ai-${Date.now()}`;
+    addModule(targetCourse, {
+      id: moduleId,
+      title: `AI Import – ${new Date().toLocaleDateString()}`,
+      description: generated.moduleSummary,
+      weekNumber: (data.courses.find((c) => c.id === targetCourse)?.modules.length || 0) + 1,
+      lessons: [],
+    });
+
+    // Add each lesson
+    generated.lessons.forEach((lesson) => {
+      addLesson(targetCourse, moduleId, lesson);
+    });
+
     setStep("saved");
+    toast.success("Content saved to course!");
+  };
+
+  const removeLesson = (lessonId: string) => {
+    if (!generated) return;
+    setGenerated({
+      ...generated,
+      lessons: generated.lessons.filter((l) => l.id !== lessonId),
+    });
+  };
+
+  const removeQuestion = (lessonId: string, questionId: string) => {
+    if (!generated) return;
+    setGenerated({
+      ...generated,
+      lessons: generated.lessons.map((l) =>
+        l.id === lessonId ? { ...l, questions: l.questions.filter((q) => q.id !== questionId) } : l
+      ),
+    });
+  };
+
+  const updateLessonField = (lessonId: string, field: string, value: string) => {
+    if (!generated) return;
+    setGenerated({
+      ...generated,
+      lessons: generated.lessons.map((l) =>
+        l.id === lessonId ? { ...l, [field]: value } : l
+      ),
+    });
   };
 
   const stepIndex = ["upload", "parsing", "preview", "edit", "saved"].indexOf(step);
@@ -137,7 +175,7 @@ const AIImportPage = () => {
                 <div>
                   <h2 className="text-xl font-black text-foreground">Import Your Content</h2>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Upload lecture notes, PDFs, or paste text — AI will generate modules, lessons, and questions.
+                    Paste lecture notes or text — the parser will extract sections, generate concept cards and quiz questions.
                   </p>
                 </div>
 
@@ -147,19 +185,19 @@ const AIImportPage = () => {
                       <FileText className="h-4 w-4" /> Paste Notes
                     </TabsTrigger>
                     <TabsTrigger value="pdf" className="flex-1 gap-1.5">
-                      <Upload className="h-4 w-4" /> Upload PDF
+                      <Upload className="h-4 w-4" /> Upload File
                     </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="text" className="mt-4">
                     <Textarea
-                      placeholder="Paste your lecture notes, textbook excerpts, or any study material here..."
-                      className="min-h-[200px] resize-none"
+                      placeholder={"Paste your lecture notes here...\n\nTip: Use headings (# Heading or 1. Section) to get better lesson structure.\n\nExample:\n# Introduction to Bonds\nA bond is a fixed-income instrument that represents a loan.\n\n# Bond Pricing\nBond prices are determined by discounting future cash flows..."}
+                      className="min-h-[240px] resize-none font-mono text-sm"
                       value={pastedText}
                       onChange={(e) => setPastedText(e.target.value)}
                     />
                     <p className="mt-2 text-xs text-muted-foreground">
-                      {pastedText.length} characters · Minimum 100 recommended
+                      {pastedText.length} characters · {pastedText.split(/\n\s*\n/).filter(Boolean).length} paragraphs · Min 50 chars
                     </p>
                   </TabsContent>
 
@@ -167,29 +205,50 @@ const AIImportPage = () => {
                     <label className="flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border bg-muted/30 px-6 py-12 transition-colors hover:border-primary/50 hover:bg-muted/50">
                       <Upload className="h-10 w-10 text-muted-foreground" />
                       <span className="text-sm font-bold text-foreground">
-                        {fileName || "Click to upload PDF"}
+                        {fileName || "Click to upload .txt, .md, or .csv"}
                       </span>
-                      <span className="text-xs text-muted-foreground">Max 10 MB</span>
+                      <span className="text-xs text-muted-foreground">Text files work best for local parsing</span>
                       <input
+                        ref={fileInputRef}
                         type="file"
-                        accept=".pdf"
+                        accept=".txt,.md,.csv,.tsv,.pdf"
                         className="hidden"
-                        onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
+                        onChange={handleFileUpload}
                       />
                     </label>
+                    {fileText && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        ✓ {fileText.length} characters loaded from {fileName}
+                      </p>
+                    )}
                   </TabsContent>
                 </Tabs>
 
+                {/* Target course selector */}
+                <div>
+                  <Label className="font-bold text-sm">Save to Course</Label>
+                  <Select value={targetCourse} onValueChange={setTargetCourse}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select target course" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {data.courses.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>{c.emoji} {c.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="rounded-xl border bg-card p-4">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                     <div>
-                      <p className="text-sm font-bold text-foreground">AI will generate:</p>
+                      <p className="text-sm font-bold text-foreground">The parser will generate:</p>
                       <ul className="mt-1 space-y-0.5 text-sm text-muted-foreground">
-                        <li>• Module summary & learning objectives</li>
-                        <li>• Structured lessons with concept cards</li>
-                        <li>• Quiz questions with explanations</li>
-                        <li>• Flashcards for spaced repetition</li>
+                        <li>• Module summary from your content</li>
+                        <li>• Lessons structured by headings/sections</li>
+                        <li>• Concept cards from definitions</li>
+                        <li>• Quiz questions from key statements</li>
                       </ul>
                     </div>
                   </div>
@@ -198,8 +257,8 @@ const AIImportPage = () => {
                 <Button
                   className="w-full gap-2"
                   size="lg"
-                  onClick={handleUpload}
-                  disabled={!pastedText.trim() && !fileName}
+                  onClick={handleGenerate}
+                  disabled={inputMode === "text" ? pastedText.trim().length < 50 : !fileText.trim()}
                 >
                   <Sparkles className="h-4 w-4" />
                   Generate Content
@@ -213,18 +272,13 @@ const AIImportPage = () => {
               className="flex flex-col items-center gap-4 py-16"
             >
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
-              <h2 className="text-xl font-black text-foreground">AI is parsing your content...</h2>
+              <h2 className="text-xl font-black text-foreground">Parsing your content...</h2>
               <p className="text-sm text-muted-foreground text-center max-w-sm">
-                Analyzing structure, extracting key concepts, and generating questions. This usually takes 10–30 seconds.
+                Extracting sections, building concept cards, and generating questions.
               </p>
               <div className="mt-4 flex gap-2">
                 {["Extracting topics", "Building lessons", "Creating questions"].map((t, i) => (
-                  <motion.div
-                    key={t}
-                    initial={{ opacity: 0.3 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: i * 0.8, duration: 0.5 }}
-                  >
+                  <motion.div key={t} initial={{ opacity: 0.3 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.4, duration: 0.5 }}>
                     <Badge variant="outline">{t}</Badge>
                   </motion.div>
                 ))}
@@ -238,14 +292,13 @@ const AIImportPage = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-black text-foreground">Generated Content</h2>
-                    <p className="text-sm text-muted-foreground mt-1">Review what AI created from your input</p>
+                    <p className="text-sm text-muted-foreground mt-1">Review and edit before saving</p>
                   </div>
                   <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setStep("edit")}>
-                    <Pencil className="h-3.5 w-3.5" /> Edit
+                    <Pencil className="h-3.5 w-3.5" /> Edit All
                   </Button>
                 </div>
 
-                {/* Module Summary */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">Module Summary</CardTitle>
@@ -255,7 +308,6 @@ const AIImportPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Generated Lessons */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
                     {generated.lessons.length} Lessons Generated
@@ -264,32 +316,65 @@ const AIImportPage = () => {
                     <Card key={lesson.id}>
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
                                 {i + 1}
                               </span>
-                              <h4 className="font-bold text-foreground">{lesson.title}</h4>
+                              <h4 className="font-bold text-foreground text-sm">{lesson.title}</h4>
                             </div>
-                            <p className="mt-1 text-sm text-muted-foreground">{lesson.explanation}</p>
+                            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{lesson.explanation}</p>
                             <div className="mt-2 flex flex-wrap gap-1.5">
-                              {lesson.type && <Badge variant="secondary">{lesson.type}</Badge>}
-                              {lesson.duration && <Badge variant="outline">{lesson.duration} min</Badge>}
-                              {lesson.xpReward && <Badge variant="outline">{lesson.xpReward} XP</Badge>}
-                              <Badge variant="outline">{lesson.questions.length} questions</Badge>
-                              {lesson.conceptCards && (
-                                <Badge variant="outline">{lesson.conceptCards.length} concept cards</Badge>
-                              )}
+                              {lesson.type && <Badge variant="secondary" className="text-[10px]">{lesson.type}</Badge>}
+                              {lesson.duration && <Badge variant="outline" className="text-[10px]">{lesson.duration} min</Badge>}
+                              {lesson.xpReward && <Badge variant="outline" className="text-[10px]">{lesson.xpReward} XP</Badge>}
+                              <Badge variant="outline" className="text-[10px]">{lesson.questions.length} questions</Badge>
+                              {lesson.conceptCards && <Badge variant="outline" className="text-[10px]">{lesson.conceptCards.length} cards</Badge>}
                             </div>
                           </div>
-                          <Eye className="h-4 w-4 shrink-0 text-muted-foreground" />
+                          <div className="flex gap-1">
+                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setExpandedLesson(expandedLesson === lesson.id ? null : lesson.id)}>
+                              {expandedLesson === lesson.id ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => removeLesson(lesson.id)}>
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         </div>
+
+                        {expandedLesson === lesson.id && (
+                          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-3 space-y-2">
+                            <Separator />
+                            {lesson.conceptCards?.map((card, ci) => (
+                              <div key={ci} className="rounded-lg bg-muted/50 p-2.5">
+                                <p className="text-xs font-bold text-foreground">{card.title}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">{card.content}</p>
+                              </div>
+                            ))}
+                            {lesson.questions.map((q, qi) => (
+                              <div key={q.id} className="rounded-lg border p-2.5">
+                                <div className="flex items-start justify-between">
+                                  <p className="text-xs font-bold text-foreground">Q{qi + 1}: {q.question}</p>
+                                  <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => removeQuestion(lesson.id, q.id)}>
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                                <div className="mt-1.5 space-y-0.5">
+                                  {q.options.map((opt, oi) => (
+                                    <div key={oi} className={`text-[11px] px-2 py-1 rounded ${oi === q.correctIndex ? "bg-success/10 text-success font-bold" : "text-muted-foreground"}`}>
+                                      {oi === q.correctIndex ? "✓" : "○"} {opt}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
                 </div>
 
-                {/* Stats Summary */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { label: "Lessons", value: generated.lessons.length },
@@ -319,28 +404,50 @@ const AIImportPage = () => {
             <motion.div key="edit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-xl font-black text-foreground">Edit Before Publishing</h2>
-                  <p className="text-sm text-muted-foreground mt-1">Fine-tune the generated content</p>
+                  <h2 className="text-xl font-black text-foreground">Edit Before Saving</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Fine-tune titles, explanations, and remove unwanted content</p>
                 </div>
 
                 <div className="space-y-3">
                   <Label className="font-bold">Module Summary</Label>
-                  <Textarea defaultValue={generated.moduleSummary} className="min-h-[80px]" />
+                  <Textarea
+                    value={generated.moduleSummary}
+                    onChange={(e) => setGenerated({ ...generated, moduleSummary: e.target.value })}
+                    className="min-h-[80px]"
+                  />
                 </div>
 
                 {generated.lessons.map((lesson, i) => (
                   <Card key={lesson.id}>
                     <CardContent className="space-y-3 p-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between">
                         <span className="text-sm font-bold text-muted-foreground">Lesson {i + 1}</span>
+                        <Button variant="ghost" size="sm" className="h-7 text-destructive" onClick={() => removeLesson(lesson.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
-                      <Input defaultValue={lesson.title} className="font-bold" />
-                      <Textarea defaultValue={lesson.explanation} className="min-h-[60px]" />
+                      <Input
+                        value={lesson.title}
+                        onChange={(e) => updateLessonField(lesson.id, "title", e.target.value)}
+                        className="font-bold"
+                      />
+                      <Textarea
+                        value={lesson.explanation}
+                        onChange={(e) => updateLessonField(lesson.id, "explanation", e.target.value)}
+                        className="min-h-[60px]"
+                      />
                       <Separator />
-                      <p className="text-xs font-bold text-muted-foreground">{lesson.questions.length} questions</p>
+                      <p className="text-xs font-bold text-muted-foreground">
+                        {lesson.questions.length} questions · {lesson.conceptCards?.length || 0} cards
+                      </p>
                       {lesson.questions.map((q, qi) => (
                         <div key={q.id} className="rounded-lg border bg-muted/30 p-3">
-                          <p className="text-sm font-bold text-foreground">Q{qi + 1}: {q.question}</p>
+                          <div className="flex items-start justify-between">
+                            <p className="text-sm font-bold text-foreground">Q{qi + 1}: {q.question}</p>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeQuestion(lesson.id, q.id)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                           <div className="mt-1.5 space-y-1">
                             {q.options.map((opt, oi) => (
                               <div key={oi} className={`text-xs px-2 py-1 rounded ${oi === q.correctIndex ? "bg-success/10 text-success font-bold" : "text-muted-foreground"}`}>
@@ -370,24 +477,21 @@ const AIImportPage = () => {
             <motion.div key="saved" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
               className="flex flex-col items-center gap-4 py-16 text-center"
             >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
                 className="flex h-20 w-20 items-center justify-center rounded-full bg-success/10"
               >
                 <Save className="h-10 w-10 text-success" />
               </motion.div>
               <h2 className="text-xl font-black text-foreground">Content Saved!</h2>
               <p className="text-sm text-muted-foreground max-w-sm">
-                Your AI-generated module has been saved. Once Lovable Cloud is enabled, content will persist in the database.
+                Your generated content has been added as a new module to the selected course.
               </p>
               <div className="mt-4 flex gap-3">
-                <Button variant="outline" onClick={() => { setStep("upload"); setGenerated(null); setPastedText(""); setFileName(""); }}>
+                <Button variant="outline" onClick={() => { setStep("upload"); setGenerated(null); setPastedText(""); setFileName(""); setFileText(""); }}>
                   Import More
                 </Button>
-                <Button onClick={() => navigate("/")}>
-                  Go to Courses
+                <Button onClick={() => navigate("/admin")}>
+                  Go to Admin
                 </Button>
               </div>
             </motion.div>

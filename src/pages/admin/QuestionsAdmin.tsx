@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, HelpCircle, Eye, Shuffle } from "lucide-react";
+import { Plus, Pencil, Trash2, HelpCircle, Eye, Shuffle, Upload, Download, FileSpreadsheet } from "lucide-react";
 import { useAdminData } from "@/hooks/useAdminData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { parseCSVToQuestions, CSV_TEMPLATE } from "@/lib/ai-parser";
+import { toast } from "sonner";
 import type { QuizQuestion } from "@/types/course";
 
 const QuestionsAdmin = () => {
@@ -25,11 +27,15 @@ const QuestionsAdmin = () => {
   const [selectedModule, setSelectedModule] = useState("");
   const [selectedLesson, setSelectedLesson] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [csvDialogOpen, setCsvDialogOpen] = useState(false);
+  const [csvText, setCsvText] = useState("");
+  const [csvPreview, setCsvPreview] = useState<{ questions: QuizQuestion[]; errors: string[] } | null>(null);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [editing, setEditing] = useState<QuizQuestion | null>(null);
   const [form, setForm] = useState({
     question: "", options: ["", "", "", ""], correctIndex: 0, explanation: "",
   });
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const course = data.courses.find((c) => c.id === selectedCourse);
   const modules = course?.modules || [];
@@ -82,16 +88,56 @@ const QuestionsAdmin = () => {
     }));
   };
 
+  // CSV Import
+  const downloadTemplate = () => {
+    const blob = new Blob([CSV_TEMPLATE], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "questions-template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCSVFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    setCsvText(text);
+    setCsvPreview(parseCSVToQuestions(text));
+  };
+
+  const handleCSVParse = () => {
+    if (!csvText.trim()) return;
+    setCsvPreview(parseCSVToQuestions(csvText));
+  };
+
+  const handleCSVImport = () => {
+    if (!csvPreview || !selectedCourse || !selectedModule || !selectedLesson) return;
+    csvPreview.questions.forEach((q) => {
+      addQuestion(selectedCourse, selectedModule, selectedLesson, q);
+    });
+    toast.success(`Imported ${csvPreview.questions.length} questions!`);
+    setCsvDialogOpen(false);
+    setCsvText("");
+    setCsvPreview(null);
+  };
+
   return (
     <div className="p-6 lg:p-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-2xl font-black text-foreground">Questions</h1>
           <p className="text-sm text-muted-foreground mt-1">{questions.length} questions in selected lesson</p>
         </motion.div>
-        <Button onClick={openNew} className="gap-1.5" disabled={!selectedLesson}>
-          <Plus className="h-4 w-4" /> New Question
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setCsvDialogOpen(true)} className="gap-1.5" disabled={!selectedLesson}>
+            <FileSpreadsheet className="h-4 w-4" /> CSV Import
+          </Button>
+          <Button onClick={openNew} className="gap-1.5" disabled={!selectedLesson}>
+            <Plus className="h-4 w-4" /> New Question
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -177,12 +223,13 @@ const QuestionsAdmin = () => {
           <div className="flex flex-col items-center gap-3 py-16 text-center">
             <HelpCircle className="h-10 w-10 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
-              {selectedLesson ? "No questions yet. Add one!" : "Select a subject, module, and lesson first."}
+              {selectedLesson ? "No questions yet. Add one or import from CSV!" : "Select a subject, module, and lesson first."}
             </p>
           </div>
         )}
       </div>
 
+      {/* Question Editor Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
@@ -228,6 +275,92 @@ const QuestionsAdmin = () => {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleSave} disabled={!form.question.trim() || form.options.filter((o) => o.trim()).length < 2}>
               {editing ? "Save" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* CSV Import Dialog */}
+      <Dialog open={csvDialogOpen} onOpenChange={(open) => { setCsvDialogOpen(open); if (!open) { setCsvText(""); setCsvPreview(null); } }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileSpreadsheet className="h-5 w-5" /> Bulk CSV Import
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={downloadTemplate}>
+                <Download className="h-3.5 w-3.5" /> Download Template
+              </Button>
+              <label>
+                <Button variant="outline" size="sm" className="gap-1.5" asChild>
+                  <span>
+                    <Upload className="h-3.5 w-3.5" /> Upload CSV
+                  </span>
+                </Button>
+                <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleCSVFile} />
+              </label>
+            </div>
+
+            <div>
+              <Label className="font-bold text-sm">Or paste CSV content</Label>
+              <Textarea
+                value={csvText}
+                onChange={(e) => setCsvText(e.target.value)}
+                placeholder={`question,option1,option2,option3,option4,correctIndex,explanation\n"What is 2+2?","3","4","5","6",1,"2+2 equals 4"`}
+                className="min-h-[120px] font-mono text-xs"
+              />
+              <Button variant="secondary" size="sm" className="mt-2" onClick={handleCSVParse} disabled={!csvText.trim()}>
+                Parse CSV
+              </Button>
+            </div>
+
+            {csvPreview && (
+              <div className="space-y-3">
+                {csvPreview.errors.length > 0 && (
+                  <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+                    <p className="text-xs font-bold text-destructive mb-1">Errors:</p>
+                    {csvPreview.errors.map((err, i) => (
+                      <p key={i} className="text-xs text-destructive/80">• {err}</p>
+                    ))}
+                  </div>
+                )}
+
+                {csvPreview.questions.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-foreground">
+                      ✓ {csvPreview.questions.length} questions parsed
+                    </p>
+                    {csvPreview.questions.slice(0, 5).map((q, i) => (
+                      <div key={i} className="rounded-lg border bg-muted/30 p-2.5">
+                        <p className="text-xs font-bold text-foreground">{q.question}</p>
+                        <div className="mt-1 flex gap-1 flex-wrap">
+                          {q.options.map((opt, oi) => (
+                            <Badge key={oi} variant={oi === q.correctIndex ? "default" : "outline"} className="text-[10px]">
+                              {opt}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    {csvPreview.questions.length > 5 && (
+                      <p className="text-xs text-muted-foreground">... and {csvPreview.questions.length - 5} more</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCsvDialogOpen(false)}>Cancel</Button>
+            <Button
+              onClick={handleCSVImport}
+              disabled={!csvPreview || csvPreview.questions.length === 0}
+              className="gap-1.5"
+            >
+              <Upload className="h-4 w-4" />
+              Import {csvPreview?.questions.length || 0} Questions
             </Button>
           </DialogFooter>
         </DialogContent>
