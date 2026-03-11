@@ -1,5 +1,5 @@
 import { Course } from "@/types/course";
-
+import { bonusModuleAfterWeek3, bonusModuleAfterWeek6, bonusModuleAfterWeek9, bonusModuleAfterWeek12 } from "./bonus-modules";
 export const corporateFinanceCourse: Course = {
   id: "corporate-finance",
   title: "Corporate Finance",
