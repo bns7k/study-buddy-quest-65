@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Course, Module, Lesson, QuizQuestion } from "@/types/course";
-import { allCourses } from "@/data/courses";
+import { defaultCourses } from "@/data/courses";
 
 const ADMIN_KEY = "studyapp-admin-data";
 
