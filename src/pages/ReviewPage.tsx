@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { StatsBar } from "@/components/StatsBar";
 import { ReviewPlayer } from "@/components/ReviewPlayer";
 import { useProgress } from "@/hooks/useProgress";
-import { allCourses } from "@/data/courses";
+import { getAllCourses } from "@/data/courses";
 import { BottomNav } from "@/components/BottomNav";
 import { QuizQuestion } from "@/types/course";
 
