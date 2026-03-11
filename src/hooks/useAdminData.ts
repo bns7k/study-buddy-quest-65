@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Course, Module, Lesson, QuizQuestion } from "@/types/course";
-import { allCourses } from "@/data/courses";
+import { defaultCourses } from "@/data/courses";
 
 const ADMIN_KEY = "studyapp-admin-data";
 
@@ -13,7 +13,7 @@ function loadAdminData(): AdminData {
     const stored = localStorage.getItem(ADMIN_KEY);
     if (stored) return JSON.parse(stored);
   } catch {}
-  return { courses: structuredClone(allCourses) };
+  return { courses: structuredClone(defaultCourses) };
 }
 
 export function useAdminData() {
@@ -224,7 +224,7 @@ export function useAdminData() {
   };
 
   const resetToDefaults = useCallback(() => {
-    setData({ courses: structuredClone(allCourses) });
+    setData({ courses: structuredClone(defaultCourses) });
   }, []);
 
   return {

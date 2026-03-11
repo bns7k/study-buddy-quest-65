@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { StatsBar } from "@/components/StatsBar";
 import { ReviewPlayer } from "@/components/ReviewPlayer";
 import { useProgress } from "@/hooks/useProgress";
-import { allCourses } from "@/data/courses";
+import { getAllCourses } from "@/data/courses";
 import { BottomNav } from "@/components/BottomNav";
 import { QuizQuestion } from "@/types/course";
 
@@ -34,7 +34,7 @@ export default function ReviewPage() {
   // Build a map from questionId to QuizQuestion
   const questionMap = useMemo(() => {
     const map = new Map<string, { question: QuizQuestion; courseName: string; moduleName: string; lessonName: string }>();
-    allCourses.forEach((course) =>
+    getAllCourses().forEach((course) =>
       course.modules.forEach((mod) =>
         mod.lessons.forEach((lesson) =>
           lesson.questions.forEach((q) =>
@@ -105,7 +105,7 @@ export default function ReviewPage() {
     const info = questionMap.get(questionId);
     if (info) {
       // Find courseId and lessonId
-      for (const course of allCourses) {
+      for (const course of getAllCourses()) {
         for (const mod of course.modules) {
           for (const lesson of mod.lessons) {
             if (lesson.questions.some((q) => q.id === questionId)) {

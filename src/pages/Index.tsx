@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, Settings, Shield } from "lucide-react";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
-import { allCourses } from "@/data/courses";
+import { getAllCourses } from "@/data/courses";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { BottomNav } from "@/components/BottomNav";
@@ -10,8 +10,9 @@ import { BottomNav } from "@/components/BottomNav";
 const Index = () => {
   const { progress, getModuleProgress } = useProgress();
   const navigate = useNavigate();
+  const courses = getAllCourses();
 
-  const getCourseProgress = (course: typeof allCourses[0]) => {
+  const getCourseProgress = (course: typeof courses[0]) => {
     const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
     return getModuleProgress(allLessonIds);
   };
@@ -45,7 +46,7 @@ const Index = () => {
         </motion.div>
 
         <div className="space-y-4">
-          {allCourses.map((course, index) => {
+          {courses.map((course, index) => {
             const courseProg = getCourseProgress(course);
             return (
               <motion.div
