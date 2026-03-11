@@ -113,7 +113,11 @@ export default function LessonPage() {
 
         {phase === "quiz" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <QuizView questions={lesson.questions} onComplete={handleQuizComplete} />
+            <QuizView
+              questions={lesson.questions}
+              onComplete={handleQuizComplete}
+              onAnswer={(qId, correct) => recordAnswer(qId, lesson.id, courseId || "", correct)}
+            />
           </motion.div>
         )}
 
