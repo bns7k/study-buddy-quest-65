@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { GraduationCap, Settings, Shield } from "lucide-react";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
-import { allCourses } from "@/data/courses";
+import { getAllCourses } from "@/data/courses";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { BottomNav } from "@/components/BottomNav";
