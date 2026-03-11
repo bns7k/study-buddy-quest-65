@@ -1,34 +1,42 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowRight, X, Zap, Trophy, RotateCcw, Star } from "lucide-react";
 import { QuizQuestion } from "@/types/course";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
-interface QuizViewProps {
+interface ReviewPlayerProps {
   questions: QuizQuestion[];
-  onComplete: (correctCount: number, totalCount: number) => void;
+  title: string;
+  subtitle?: string;
   onAnswer?: (questionId: string, wasCorrect: boolean) => void;
+  onComplete: (correct: number, total: number) => void;
+  onExit: () => void;
 }
 
-export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
+export function ReviewPlayer({ questions, title, subtitle, onAnswer, onComplete, onExit }: ReviewPlayerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [masteredIds, setMasteredIds] = useState<Set<string>>(new Set());
 
   const question = questions[currentIndex];
   const isCorrect = selectedOption === question?.correctIndex;
   const progressPercent = ((currentIndex + (showFeedback ? 1 : 0)) / questions.length) * 100;
 
-  const handleSelect = (idx: number) => {
+  const handleSelect = useCallback((idx: number) => {
     if (showFeedback) return;
     setSelectedOption(idx);
     setShowFeedback(true);
     const correct = idx === question.correctIndex;
-    if (correct) setCorrectCount((c) => c + 1);
+    if (correct) {
+      setCorrectCount((c) => c + 1);
+      setMasteredIds((prev) => new Set(prev).add(question.id));
+    }
     onAnswer?.(question.id, correct);
-  };
+  }, [showFeedback, question, onAnswer]);
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
@@ -36,18 +44,75 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
       setSelectedOption(null);
       setShowFeedback(false);
     } else {
+      setFinished(true);
       onComplete(correctCount, questions.length);
     }
   };
 
+  if (finished) {
+    const pct = Math.round((correctCount / questions.length) * 100);
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center gap-5 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", delay: 0.2 }}
+          className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10"
+        >
+          <Trophy className="h-10 w-10 text-primary" />
+        </motion.div>
+        <h2 className="text-2xl font-black text-foreground">Review Complete!</h2>
+        <p className="text-5xl font-black text-primary">{pct}%</p>
+        <p className="text-muted-foreground font-semibold">{correctCount}/{questions.length} correct</p>
+
+        <div className="flex items-center gap-1.5 rounded-xl bg-xp/10 px-4 py-2">
+          <Zap className="h-5 w-5 text-xp fill-xp" />
+          <span className="text-lg font-black text-xp">+{correctCount * 5} XP</span>
+        </div>
+
+        {masteredIds.size > 0 && (
+          <div className="flex items-center gap-1.5 rounded-xl bg-success/10 px-4 py-2">
+            <Star className="h-4 w-4 text-success fill-success" />
+            <span className="text-sm font-bold text-success">{masteredIds.size} question{masteredIds.size > 1 ? "s" : ""} progressing toward mastery</span>
+          </div>
+        )}
+
+        <p className="text-sm text-muted-foreground">
+          {pct === 100 ? "Perfect review! 🎉" : pct >= 70 ? "Great improvement! 🌟" : "Keep reviewing — you'll get there! 💪"}
+        </p>
+
+        <div className="flex w-full gap-2">
+          <Button onClick={onExit} variant="outline" className="flex-1 gap-2 rounded-xl font-bold">
+            Done
+          </Button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm font-bold text-muted-foreground">
-          <span>Question {currentIndex + 1} of {questions.length}</span>
-          <span>{correctCount} correct</span>
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={onExit} className="shrink-0 rounded-xl">
+          <X className="h-5 w-5" />
+        </Button>
+        <div className="flex-1 min-w-0">
+          <Progress value={progressPercent} className="h-2.5" />
         </div>
-        <Progress value={progressPercent} className="h-2.5" />
+        <span className="text-xs font-bold text-muted-foreground whitespace-nowrap">
+          {currentIndex + 1}/{questions.length}
+        </span>
+      </div>
+
+      {/* Question counter */}
+      <div className="flex items-center justify-between text-sm font-bold text-muted-foreground">
+        <span>{title}</span>
+        <span>{correctCount} correct</span>
       </div>
 
       <AnimatePresence mode="wait">

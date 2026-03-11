@@ -44,6 +44,18 @@ export interface Course {
   modules: Module[];
 }
 
+export interface QuestionRecord {
+  questionId: string;
+  lessonId: string;
+  courseId: string;
+  wrongCount: number;
+  correctCount: number;
+  lastReviewDate: string;
+  nextReviewDate: string;
+  interval: number; // days until next review
+  mastered: boolean;
+}
+
 export interface UserProgress {
   xp: number;
   streak: number;
@@ -51,6 +63,9 @@ export interface UserProgress {
   completedLessons: string[];
   lessonScores: Record<string, number>;
   weeklyXp?: Record<string, number>;
+  questionRecords?: Record<string, QuestionRecord>;
+  reviewStreak?: number;
+  lastReviewDate?: string;
 }
 
 export interface Badge {
