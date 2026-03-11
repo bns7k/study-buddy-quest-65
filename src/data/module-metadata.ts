@@ -95,6 +95,23 @@ export const moduleMetadata: Record<string, { description: string; learningObjec
       "Analyze the role of deposit insurance",
     ],
   },
+  // Bonus project modules
+  "bonus-1": {
+    description: "Apply TVM concepts to build a DCF model for Tesla using real financial data.",
+    learningObjectives: ["Build a DCF model from scratch", "Estimate free cash flows", "Calculate intrinsic value per share"],
+  },
+  "bonus-2": {
+    description: "Evaluate Apple's $2B AR/VR R&D investment using NPV, sensitivity analysis, and real options.",
+    learningObjectives: ["Evaluate a real investment using NPV", "Apply sensitivity analysis", "Value the option to expand or abandon"],
+  },
+  "bonus-3": {
+    description: "Analyze Amazon's negative cash conversion cycle and compare working capital strategies.",
+    learningObjectives: ["Calculate a real company's CCC", "Understand negative working capital", "Compare strategies across industries"],
+  },
+  "bonus-4": {
+    description: "Structure a full M&A case: should Microsoft acquire an AI startup for $5B?",
+    learningObjectives: ["Structure M&A valuation", "Estimate synergies and max bid price", "Apply winner's curse concept"],
+  },
   // Options & Derivatives modules
   "od-week-1": {
     description: "Introduction to derivative markets, the difference between exchange-traded and OTC instruments, and the basic types of derivatives.",
