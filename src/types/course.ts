@@ -1,3 +1,12 @@
+export type LessonType = "concept" | "quiz" | "practice" | "recap";
+
+export interface ConceptCard {
+  title: string;
+  content: string;
+  formula?: string;
+  example?: string;
+}
+
 export interface QuizQuestion {
   id: string;
   question: string;
@@ -9,7 +18,12 @@ export interface QuizQuestion {
 export interface Lesson {
   id: string;
   title: string;
+  type?: LessonType;
+  duration?: number;
+  xpReward?: number;
   explanation: string;
+  learningObjectives?: string[];
+  conceptCards?: ConceptCard[];
   questions: QuizQuestion[];
 }
 
@@ -17,6 +31,8 @@ export interface Module {
   id: string;
   weekNumber: number;
   title: string;
+  description?: string;
+  learningObjectives?: string[];
   lessons: Lesson[];
 }
 
@@ -34,4 +50,13 @@ export interface UserProgress {
   lastActiveDate: string;
   completedLessons: string[];
   lessonScores: Record<string, number>;
+  weeklyXp?: Record<string, number>;
+}
+
+export interface Badge {
+  id: string;
+  title: string;
+  description: string;
+  emoji: string;
+  condition: (progress: UserProgress) => boolean;
 }

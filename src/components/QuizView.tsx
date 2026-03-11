@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, ArrowRight, Trophy, RotateCcw } from "lucide-react";
+import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
 import { QuizQuestion } from "@/types/course";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,7 +15,6 @@ export function QuizView({ questions, onComplete }: QuizViewProps) {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-  const [finished, setFinished] = useState(false);
 
   const question = questions[currentIndex];
   const isCorrect = selectedOption === question?.correctIndex;
@@ -34,46 +33,9 @@ export function QuizView({ questions, onComplete }: QuizViewProps) {
       setSelectedOption(null);
       setShowFeedback(false);
     } else {
-      const finalCorrect = correctCount;
-      setFinished(true);
-      onComplete(finalCorrect, questions.length);
+      onComplete(correctCount, questions.length);
     }
   };
-
-  const handleRetry = () => {
-    setCurrentIndex(0);
-    setSelectedOption(null);
-    setShowFeedback(false);
-    setCorrectCount(0);
-    setFinished(false);
-  };
-
-  if (finished) {
-    const pct = Math.round((correctCount / questions.length) * 100);
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center gap-6 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center"
-      >
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-          <Trophy className="h-10 w-10 text-primary" />
-        </div>
-        <h2 className="text-2xl font-black text-foreground">Quiz Complete!</h2>
-        <p className="text-4xl font-black text-primary">{pct}%</p>
-        <p className="text-muted-foreground">
-          {correctCount}/{questions.length} correct
-          {pct === 100 ? " — Perfect! 🎉" : pct >= 70 ? " — Great job! 🌟" : " — Keep practicing! 💪"}
-        </p>
-        <p className="text-sm font-bold text-xp">
-          +{correctCount * 10 + (pct === 100 ? 25 : 0)} XP earned
-        </p>
-        <Button onClick={handleRetry} variant="outline" className="gap-2 rounded-xl">
-          <RotateCcw className="h-4 w-4" /> Try Again
-        </Button>
-      </motion.div>
-    );
-  }
 
   return (
     <div className="space-y-6">

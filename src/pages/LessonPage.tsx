@@ -1,89 +1,134 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, BookOpen, GraduationCap } from "lucide-react";
+import { X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { QuizView } from "@/components/QuizView";
-import { StatsBar } from "@/components/StatsBar";
+import { LessonIntro } from "@/components/LessonIntro";
+import { LessonComplete } from "@/components/LessonComplete";
 import { useProgress } from "@/hooks/useProgress";
 import { getCourseById } from "@/data/courses";
+import { getLessonXpReward } from "@/lib/lesson-utils";
+import { allBadges } from "@/data/badges";
+
+type LessonPhase = "intro" | "quiz" | "complete";
 
 export default function LessonPage() {
   const { courseId, moduleId, lessonId } = useParams();
   const navigate = useNavigate();
   const { progress, completeLesson } = useProgress();
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [phase, setPhase] = useState<LessonPhase>("intro");
+  const [quizResult, setQuizResult] = useState<{ correct: number; total: number } | null>(null);
 
   const course = getCourseById(courseId || "");
   const module = course?.modules.find((m) => m.id === moduleId);
   const lesson = module?.lessons.find((l) => l.id === lessonId);
 
+  // Count badges before completion for detecting new ones
+  const previousBadgeCount = useMemo(
+    () => allBadges.filter((b) => b.condition(progress)).length,
+    // Only compute on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   if (!course || !module || !lesson) return <div className="p-8 text-center text-muted-foreground">Lesson not found</div>;
+
+  const xpReward = getLessonXpReward(lesson);
+
+  // Find next lesson
+  const currentLessonIndex = module.lessons.findIndex((l) => l.id === lessonId);
+  const nextLesson = currentLessonIndex < module.lessons.length - 1 ? module.lessons[currentLessonIndex + 1] : null;
 
   const handleQuizComplete = (correct: number, total: number) => {
     completeLesson(lesson.id, correct, total);
+    setQuizResult({ correct, total });
+    setPhase("complete");
   };
+
+  const handleRetry = () => {
+    setQuizResult(null);
+    setPhase("intro");
+  };
+
+  const handleNextLesson = () => {
+    if (nextLesson) {
+      navigate(`/course/${courseId}/module/${moduleId}/lesson/${nextLesson.id}`);
+      setPhase("intro");
+      setQuizResult(null);
+    }
+  };
+
+  // Minimalist lesson player header
+  const showMinimalHeader = phase === "quiz";
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+      {/* Minimal focus header for quiz mode */}
+      {showMinimalHeader ? (
+        <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+          <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(`/course/${courseId}/module/${moduleId}`)}
+              className="shrink-0 rounded-xl"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <Progress value={0} className="h-2.5 flex-1" />
+            <div className="flex items-center gap-1 rounded-lg bg-xp/10 px-2 py-1">
+              <Zap className="h-3.5 w-3.5 text-xp fill-xp" />
+              <span className="text-xs font-bold text-xp">{xpReward}</span>
             </div>
-            <span className="text-lg font-black text-foreground">BME Finance fast track</span>
           </div>
-          <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
-        </div>
-      </header>
+        </header>
+      ) : (
+        <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+          <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(`/course/${courseId}/module/${moduleId}`)}
+              className="rounded-xl"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            <span className="text-sm font-bold text-muted-foreground">{lesson.title}</span>
+            <div className="w-10" />
+          </div>
+        </header>
+      )}
 
       <main className="mx-auto max-w-2xl px-4 py-6 pb-20">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(`/course/${courseId}/module/${moduleId}`)}
-          className="mb-4 gap-2 rounded-xl font-bold text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to Module
-        </Button>
+        {phase === "intro" && (
+          <LessonIntro
+            lesson={lesson}
+            moduleName={module.title}
+            weekNumber={module.weekNumber}
+            onStart={() => setPhase("quiz")}
+          />
+        )}
 
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs font-bold uppercase tracking-wider text-primary">
-            Week {module.weekNumber} — {module.title}
-          </p>
-          <h1 className="text-2xl font-black text-foreground">{lesson.title}</h1>
-        </motion.div>
-
-        {!showQuiz ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="mt-6 space-y-6"
-          >
-            <div className="rounded-2xl border-2 border-border bg-card p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <BookOpen className="h-5 w-5 text-primary" />
-                <h2 className="font-extrabold text-foreground">Lesson</h2>
-              </div>
-              <p className="leading-relaxed text-foreground/90">{lesson.explanation}</p>
-            </div>
-
-            <Button
-              onClick={() => setShowQuiz(true)}
-              className="w-full gap-2 rounded-xl font-bold h-12 text-base"
-            >
-              Start Quiz <ArrowRight className="h-4 w-4" />
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-6"
-          >
+        {phase === "quiz" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <QuizView questions={lesson.questions} onComplete={handleQuizComplete} />
           </motion.div>
+        )}
+
+        {phase === "complete" && quizResult && (
+          <LessonComplete
+            correctCount={quizResult.correct}
+            totalCount={quizResult.total}
+            xpEarned={quizResult.correct * 10 + (quizResult.correct === quizResult.total ? 25 : 0)}
+            streak={progress.streak}
+            progress={progress}
+            previousBadgeCount={previousBadgeCount}
+            onNextLesson={nextLesson ? handleNextLesson : undefined}
+            onRetry={handleRetry}
+            onBackToModule={() => navigate(`/course/${courseId}/module/${moduleId}`)}
+          />
         )}
       </main>
     </div>

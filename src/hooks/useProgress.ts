@@ -14,7 +14,7 @@ function loadProgress(): UserProgress {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return JSON.parse(stored);
   } catch {}
-  return { xp: 0, streak: 0, lastActiveDate: "", completedLessons: [], lessonScores: {} };
+  return { xp: 0, streak: 0, lastActiveDate: "", completedLessons: [], lessonScores: {}, weeklyXp: {} };
 }
 
 export function useProgress() {
@@ -39,15 +39,18 @@ export function useProgress() {
   const completeLesson = useCallback((lessonId: string, correctCount: number, totalCount: number) => {
     updateStreak();
     setProgress((prev) => {
+      const today = getToday();
       const alreadyCompleted = prev.completedLessons.includes(lessonId);
       const earnedXP = correctCount * XP_PER_CORRECT + (correctCount === totalCount ? XP_BONUS_PERFECT : 0);
       const prevScore = prev.lessonScores[lessonId] ?? 0;
       const scorePercent = Math.round((correctCount / totalCount) * 100);
+      const prevWeeklyXp = prev.weeklyXp || {};
       return {
         ...prev,
         xp: prev.xp + earnedXP,
         completedLessons: alreadyCompleted ? prev.completedLessons : [...prev.completedLessons, lessonId],
         lessonScores: { ...prev.lessonScores, [lessonId]: Math.max(prevScore, scorePercent) },
+        weeklyXp: { ...prevWeeklyXp, [today]: (prevWeeklyXp[today] || 0) + earnedXP },
       };
     });
   }, [updateStreak]);
