@@ -40,6 +40,13 @@ const App = () => (
           <Route path="/ai-import" element={<AIImportPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="subjects" element={<SubjectsAdmin />} />
+            <Route path="modules" element={<ModulesAdmin />} />
+            <Route path="lessons" element={<LessonsAdmin />} />
+            <Route path="questions" element={<QuestionsAdmin />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
