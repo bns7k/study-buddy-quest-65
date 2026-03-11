@@ -60,11 +60,11 @@ export default function ExamModePage() {
         questionCount: m.lessons.reduce((sum, l) => sum + l.questions.length, 0),
       };
     });
-  }, [course.modules, progress, getModuleProgress]);
+  }, [course, progress, getModuleProgress]);
 
   const weakModules = moduleAnalysis.filter((m) => m.isWeak);
   const wrongQuestionIds = useMemo(() => {
-    // Questions from lessons where score < 100
+    if (!course) return [];
     return course.modules.flatMap((m) =>
       m.lessons
         .filter((l) => {
@@ -73,7 +73,9 @@ export default function ExamModePage() {
         })
         .flatMap((l) => l.questions)
     );
-  }, [course.modules, progress.lessonScores]);
+  }, [course, progress.lessonScores]);
+
+  if (!course) return <div className="p-8 text-center text-muted-foreground">Course not found</div>;
 
   // Shuffle helper
   const shuffle = <T,>(arr: T[]): T[] => {
