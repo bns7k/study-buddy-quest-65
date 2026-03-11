@@ -31,18 +31,17 @@ export default function ExamModePage() {
   const [examConfig, setExamConfig] = useState<ExamConfig | null>(null);
 
   const course = getCourseById(courseId || "");
-  if (!course) return <div className="p-8 text-center text-muted-foreground">Course not found</div>;
-
   const formulas = getFormulasForCourse(courseId || "");
 
   // Gather all questions from the course
   const allQuestions = useMemo(() =>
-    course.modules.flatMap((m) =>
+    course?.modules.flatMap((m) =>
       m.lessons.flatMap((l) => l.questions)
-    ), [course]);
+    ) || [], [course]);
 
   // Analyze weak modules
   const moduleAnalysis = useMemo(() => {
+    if (!course) return [];
     return course.modules.map((m) => {
       const lessonIds = m.lessons.map((l) => l.id);
       const completedCount = lessonIds.filter((id) => progress.completedLessons.includes(id)).length;
