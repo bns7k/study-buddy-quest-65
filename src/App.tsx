@@ -10,6 +10,7 @@ import LessonPage from "./pages/LessonPage.tsx";
 import ProgressPage from "./pages/ProgressPage.tsx";
 import AchievementsPage from "./pages/AchievementsPage.tsx";
 import ExamModePage from "./pages/ExamModePage.tsx";
+import ReviewPage from "./pages/ReviewPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/course/:courseId/module/:moduleId" element={<ModulePage />} />
           <Route path="/course/:courseId/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
           <Route path="/course/:courseId/exam" element={<ExamModePage />} />
+          <Route path="/review" element={<ReviewPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/achievements" element={<AchievementsPage />} />
           <Route path="*" element={<NotFound />} />
