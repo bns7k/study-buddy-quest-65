@@ -42,6 +42,7 @@ interface LearningMapProps {
   progress: UserProgress;
   avatarGender: AvatarGender;
   rankLevel: number;
+  moduleFilter?: string[];
   onLessonClick: (courseId: string, moduleId: string, lessonId: string) => void;
 }
 
