@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Settings, Shield } from "lucide-react";
+import { GraduationCap, Settings, Shield, Heart } from "lucide-react";
 import { StatsBar } from "@/components/StatsBar";
 import { useProgress } from "@/hooks/useProgress";
 import { getAllCourses } from "@/data/courses";
 import { useNavigate } from "react-router-dom";
 import { Progress } from "@/components/ui/progress";
 import { BottomNav } from "@/components/BottomNav";
+import { SupportDialog } from "@/components/SupportDialog";
+import { useState } from "react";
 
 const Index = () => {
   const { progress, getModuleProgress } = useProgress();
   const navigate = useNavigate();
   const courses = getAllCourses();
+  const [supportOpen, setSupportOpen] = useState(false);
 
   const getCourseProgress = (course: typeof courses[0]) => {
     const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
@@ -29,6 +32,9 @@ const Index = () => {
           </div>
           <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
           <div className="flex gap-1">
+            <button onClick={() => setSupportOpen(true)} className="rounded-xl p-1.5 hover:bg-muted" title="Support the project">
+              <Heart className="h-5 w-5 text-muted-foreground" />
+            </button>
             <button onClick={() => navigate("/admin")} className="rounded-xl p-1.5 hover:bg-muted">
               <Shield className="h-5 w-5 text-muted-foreground" />
             </button>
@@ -79,38 +85,9 @@ const Index = () => {
             );
           })}
         </div>
-
-        {/* Support Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: courses.length * 0.08 + 0.1 }}
-          className="mt-10 rounded-2xl border-2 border-dashed border-border bg-card p-6 text-center"
-        >
-          <span className="text-3xl">☕</span>
-          <h2 className="mt-3 text-lg font-extrabold text-foreground">Support the project</h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Hi! I'm Benjamin, a finance master's student who got tired of learning from old, non-interactive slides.
-          </p>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-            So I started building a better way to study finance.
-          </p>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-            The app is free and built in my spare time.
-            <br />
-            If you find it useful, you can support the project with a coffee ☕
-          </p>
-          <a
-            href="https://buymeacoffee.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-accent-foreground transition-transform hover:scale-105"
-          >
-            ☕ Buy me a coffee
-          </a>
-        </motion.div>
       </main>
 
+      <SupportDialog open={supportOpen} onOpenChange={setSupportOpen} />
       <BottomNav />
     </div>
   );

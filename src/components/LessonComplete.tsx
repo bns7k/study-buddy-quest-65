@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft, FastForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allBadges } from "@/data/badges";
 import { UserProgress } from "@/types/course";
 import confetti from "canvas-confetti";
+import { SupportDialog, shouldShowSupportPrompt } from "@/components/SupportDialog";
 
 interface LessonCompleteProps {
   correctCount: number;
@@ -36,6 +37,15 @@ export function LessonComplete({
   const pct = Math.round((correctCount / totalCount) * 100);
   const currentBadges = allBadges.filter((b) => b.condition(progress));
   const newBadges = currentBadges.slice(previousBadgeCount);
+  const [showSupport, setShowSupport] = useState(false);
+
+  // Check if we should show support prompt (very rarely)
+  useEffect(() => {
+    if (shouldShowSupportPrompt()) {
+      const timer = setTimeout(() => setShowSupport(true), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Confetti on lesson complete
   useEffect(() => {
@@ -162,6 +172,7 @@ export function LessonComplete({
           </Button>
         </div>
       </div>
+      <SupportDialog open={showSupport} onOpenChange={setShowSupport} />
     </motion.div>
   );
 }
