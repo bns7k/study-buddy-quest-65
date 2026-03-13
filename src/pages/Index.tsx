@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Settings, Shield, Heart } from "lucide-react";
+import { Settings, Shield, Heart } from "lucide-react";
+import { GuildCrest } from "@/components/icons/GuildCrest";
 import { StatsBar } from "@/components/StatsBar";
 import { RankBadge } from "@/components/RankBadge";
 import { LearningMap } from "@/components/LearningMap";
@@ -40,7 +41,6 @@ const Index = () => {
   const [rankUp, setRankUp] = useState<{ show: boolean }>({ show: false });
   const prevRankRef = useRef(getRank(progress.completedLessons.length));
 
-  // Check for rank up
   useEffect(() => {
     const currentRank = getRank(progress.completedLessons.length);
     if (currentRank.level > prevRankRef.current.level) {
@@ -49,7 +49,6 @@ const Index = () => {
     prevRankRef.current = currentRank;
   }, [progress.completedLessons.length]);
 
-  // Use first course as the main learning path
   const mainCourse = courses[0];
   if (!mainCourse) return null;
 
@@ -64,11 +63,14 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15">
+              <GuildCrest className="h-6 w-6 text-primary" />
             </div>
-            <span className="text-lg font-black text-foreground hidden sm:inline">Foundation Academy</span>
+            <div className="hidden sm:block">
+              <span className="text-sm font-black text-foreground tracking-tight">Capital Guild</span>
+              <span className="block text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Foundation Academy</span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <RankBadge completedCount={progress.completedLessons.length} />
