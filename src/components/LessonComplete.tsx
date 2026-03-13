@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft, FastForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allBadges } from "@/data/badges";
 import { UserProgress } from "@/types/course";
+import confetti from "canvas-confetti";
 
 interface LessonCompleteProps {
   correctCount: number;
