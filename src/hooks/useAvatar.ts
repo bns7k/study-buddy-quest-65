@@ -6,6 +6,7 @@ const AVATAR_KEY = "studyapp-avatar";
 interface AvatarState {
   gender: AvatarGender | null;
   chosen: boolean;
+  onboardingComplete: boolean;
 }
 
 function loadAvatar(): AvatarState {
@@ -13,7 +14,7 @@ function loadAvatar(): AvatarState {
     const stored = localStorage.getItem(AVATAR_KEY);
     if (stored) return JSON.parse(stored);
   } catch {}
-  return { gender: null, chosen: false };
+  return { gender: null, chosen: false, onboardingComplete: false };
 }
 
 export function useAvatar() {
@@ -24,12 +25,16 @@ export function useAvatar() {
   }, [avatar]);
 
   const chooseAvatar = useCallback((gender: AvatarGender) => {
-    setAvatarState({ gender, chosen: true });
+    setAvatarState((prev) => ({ ...prev, gender, chosen: true }));
+  }, []);
+
+  const completeOnboarding = useCallback(() => {
+    setAvatarState((prev) => ({ ...prev, onboardingComplete: true }));
   }, []);
 
   const resetAvatar = useCallback(() => {
-    setAvatarState({ gender: null, chosen: false });
+    setAvatarState({ gender: null, chosen: false, onboardingComplete: false });
   }, []);
 
-  return { avatar, chooseAvatar, resetAvatar };
+  return { avatar, chooseAvatar, completeOnboarding, resetAvatar };
 }

@@ -4,15 +4,7 @@ import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
 import { MapAvatar } from "@/components/MapAvatar";
-import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { AvatarGender } from "@/lib/avatars";
-import { ComponentType, SVGProps } from "react";
-
-interface AcademyBuilding {
-  name: string;
-  Icon: ComponentType<SVGProps<SVGSVGElement>>;
-  afterNodeIndex: number;
-}
 
 interface MapNode {
   lesson: Lesson;
@@ -20,13 +12,6 @@ interface MapNode {
   courseId: string;
   status: "completed" | "current" | "locked";
 }
-
-const BUILDINGS: AcademyBuilding[] = [
-  { name: "Lecture Hall", Icon: LectureHallIcon, afterNodeIndex: 3 },
-  { name: "Guild Library", Icon: LibraryIcon, afterNodeIndex: 9 },
-  { name: "Market Yard", Icon: MarketYardIcon, afterNodeIndex: 18 },
-  { name: "Risk Observatory", Icon: ObservatoryIcon, afterNodeIndex: 30 },
-];
 
 function getPathX(index: number): number {
   const amplitude = 60;
@@ -42,34 +27,18 @@ interface LearningMapProps {
   progress: UserProgress;
   avatarGender: AvatarGender;
   rankLevel: number;
+  moduleFilter?: string[];
   onLessonClick: (courseId: string, moduleId: string, lessonId: string) => void;
 }
 
-function BuildingLabel({ name }: { name: string }) {
-  return (
-    <div className="relative mt-1">
-      <svg className="absolute -left-2 -right-2 -top-0.5 -bottom-0.5 h-[calc(100%+4px)] w-[calc(100%+16px)]" viewBox="0 0 100 24" preserveAspectRatio="none">
-        <path
-          d="M8 2h84l6 10-6 10H8L2 12 8 2z"
-          fill="hsl(var(--card))"
-          stroke="hsl(var(--accent))"
-          strokeWidth="1"
-          opacity="0.85"
-        />
-      </svg>
-      <span className="relative z-10 block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-accent whitespace-nowrap">
-        {name}
-      </span>
-    </div>
-  );
-}
 
-export function LearningMap({ course, progress, avatarGender, rankLevel, onLessonClick }: LearningMapProps) {
+export function LearningMap({ course, progress, avatarGender, rankLevel, moduleFilter, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
   let foundCurrent = false;
   for (const mod of course.modules) {
     if (mod.isBonus) continue;
+    if (moduleFilter && !moduleFilter.includes(mod.id)) continue;
     for (const lesson of mod.lessons) {
       const completed = progress.completedLessons.includes(lesson.id);
       let status: MapNode["status"];
@@ -134,32 +103,7 @@ export function LearningMap({ course, progress, avatarGender, rankLevel, onLesso
         })}
       </svg>
 
-      {/* Academy Buildings with banner labels */}
-      {BUILDINGS.map((building) => {
-        if (building.afterNodeIndex >= nodes.length) return null;
-        const y = building.afterNodeIndex * nodeSpacing + 40;
-        const side = building.afterNodeIndex % 2 === 0 ? 1 : -1;
-        const BuildingIcon = building.Icon;
-        return (
-          <motion.div
-            key={building.name}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, type: "spring", damping: 20 }}
-            className="absolute flex flex-col items-center"
-            style={{
-              top: y - 28,
-              left: `calc(50% + ${side * 90}px)`,
-              transform: "translateX(-50%)",
-            }}
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-accent/20 bg-card/80 shadow-md backdrop-blur-sm">
-              <BuildingIcon className="h-8 w-8 text-accent" />
-            </div>
-            <BuildingLabel name={building.name} />
-          </motion.div>
-        );
-      })}
+
 
       {/* Lesson nodes */}
       {nodes.map((node, i) => {
