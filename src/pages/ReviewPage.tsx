@@ -161,7 +161,7 @@ export default function ReviewPage() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-3">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border-2 border-border bg-card p-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
             <Calendar className="mx-auto h-5 w-5 text-streak mb-1" />
             <p className="text-2xl font-black text-foreground">{dueQuestions.length}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Due Today</p>
