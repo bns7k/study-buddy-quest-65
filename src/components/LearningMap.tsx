@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { Lock, Check } from "lucide-react";
 import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
-import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { MapBackground } from "@/components/MapBackground";
+import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { ComponentType, SVGProps } from "react";
 
 interface AcademyBuilding {
@@ -41,6 +41,25 @@ interface LearningMapProps {
   onLessonClick: (courseId: string, moduleId: string, lessonId: string) => void;
 }
 
+function BuildingLabel({ name }: { name: string }) {
+  return (
+    <div className="relative mt-1">
+      <svg className="absolute -left-2 -right-2 -top-0.5 -bottom-0.5 h-[calc(100%+4px)] w-[calc(100%+16px)]" viewBox="0 0 100 24" preserveAspectRatio="none">
+        <path
+          d="M8 2h84l6 10-6 10H8L2 12 8 2z"
+          fill="hsl(var(--card))"
+          stroke="hsl(var(--accent))"
+          strokeWidth="1"
+          opacity="0.85"
+        />
+      </svg>
+      <span className="relative z-10 block px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-accent whitespace-nowrap">
+        {name}
+      </span>
+    </div>
+  );
+}
+
 export function LearningMap({ course, progress, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
@@ -66,16 +85,29 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
   const mapHeight = nodes.length * nodeSpacing + 200;
 
   return (
-    <div className="relative mx-auto w-full max-w-sm" style={{ height: mapHeight }}>
+    <div className="relative mx-auto w-full max-w-sm rounded-2xl border border-accent/10 overflow-hidden" style={{ height: mapHeight }}>
       <MapBackground />
 
-      {/* SVG path connecting nodes */}
+      {/* Golden SVG path */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox={`-120 0 240 ${mapHeight}`}
         preserveAspectRatio="xMidYMin meet"
       >
-        {nodes.map((node, i) => {
+        <defs>
+          <linearGradient id="path-gold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(38, 90%, 60%)" />
+            <stop offset="100%" stopColor="hsl(32, 80%, 45%)" />
+          </linearGradient>
+          <filter id="path-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        {nodes.map((_, i) => {
           if (i === 0) return null;
           const x1 = getPathX(i - 1);
           const y1 = (i - 1) * nodeSpacing + 40;
@@ -88,16 +120,17 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
               key={`path-${i}`}
               d={`M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`}
               fill="none"
-              stroke={isCompleted ? "hsl(var(--success))" : "hsl(var(--muted))"}
-              strokeWidth="3"
+              stroke={isCompleted ? "url(#path-gold)" : "hsl(var(--muted))"}
+              strokeWidth={isCompleted ? 4 : 3}
               strokeDasharray={isCompleted ? "none" : "6 4"}
-              opacity={isCompleted ? 0.6 : 0.3}
+              opacity={isCompleted ? 0.8 : 0.3}
+              filter={isCompleted ? "url(#path-glow)" : undefined}
             />
           );
         })}
       </svg>
 
-      {/* Academy Buildings */}
+      {/* Academy Buildings with banner labels */}
       {BUILDINGS.map((building) => {
         if (building.afterNodeIndex >= nodes.length) return null;
         const y = building.afterNodeIndex * nodeSpacing + 40;
@@ -108,18 +141,18 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
             key={building.name}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="absolute flex flex-col items-center gap-1"
+            transition={{ delay: 0.4, type: "spring", damping: 20 }}
+            className="absolute flex flex-col items-center"
             style={{
-              top: y - 24,
+              top: y - 28,
               left: `calc(50% + ${side * 90}px)`,
               transform: "translateX(-50%)",
             }}
           >
-            <BuildingIcon className="h-10 w-10 text-primary" />
-            <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
-              {building.name}
-            </span>
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-accent/20 bg-card/80 shadow-md backdrop-blur-sm">
+              <BuildingIcon className="h-8 w-8 text-accent" />
+            </div>
+            <BuildingLabel name={building.name} />
           </motion.div>
         );
       })}
@@ -145,6 +178,7 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
               transform: "translateX(-50%)",
             }}
           >
+            {/* Avatar on current node */}
             {isCurrent && (
               <motion.div
                 animate={{ y: [-4, 0, -4] }}
@@ -161,11 +195,11 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
                 }
               }}
               disabled={isLocked}
-              className={`relative flex h-12 w-12 items-center justify-center rounded-full border-[3px] text-sm font-black shadow-lg transition-all ${
+              className={`relative flex h-13 w-13 items-center justify-center rounded-full border-[3px] text-sm font-black transition-all ${
                 isCompleted
-                  ? "border-success bg-success/20 text-success"
+                  ? "border-success bg-success/20 text-success shadow-[0_0_12px_hsl(var(--success)/0.3)]"
                   : isCurrent
-                  ? "border-accent bg-accent/20 text-accent"
+                  ? "border-accent bg-accent/20 text-accent shadow-[0_0_16px_hsl(var(--accent)/0.4)]"
                   : "border-muted bg-muted/30 text-muted-foreground cursor-not-allowed"
               }`}
               whileHover={!isLocked ? { scale: 1.15 } : undefined}
@@ -179,11 +213,22 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
                 <span className="text-base">⭐</span>
               )}
 
+              {/* Glow ring for current */}
               {isCurrent && (
                 <motion.div
                   className="absolute inset-0 rounded-full border-2 border-accent"
-                  animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.6, 0, 0.6] }}
                   transition={{ repeat: Infinity, duration: 2 }}
+                />
+              )}
+
+              {/* Sparkle particles for completed */}
+              {isCompleted && (
+                <motion.div
+                  className="absolute -inset-1 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle, hsl(var(--success) / 0.1) 0%, transparent 70%)",
+                  }}
                 />
               )}
             </motion.button>
