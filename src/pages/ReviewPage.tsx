@@ -171,7 +171,7 @@ export default function ReviewPage() {
             <p className="text-2xl font-black text-foreground">{progress.reviewStreak || 0}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Review Streak</p>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl border-2 border-border bg-card p-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
             <Star className="mx-auto h-5 w-5 text-success fill-success mb-1" />
             <p className="text-2xl font-black text-foreground">{masteredCount}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Mastered</p>
