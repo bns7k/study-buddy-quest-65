@@ -4,7 +4,7 @@ import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
-import { playMumbleChar, resumeAudio } from "@/lib/professor-voice";
+import { speakMumble, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
   onComplete: (gender: AvatarGender) => void;
