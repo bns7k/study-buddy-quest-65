@@ -352,7 +352,7 @@ function ReviewOptionCard({
     <motion.div
       whileHover={!disabled ? { scale: 1.01 } : {}}
       whileTap={!disabled ? { scale: 0.99 } : {}}
-      className={`group cursor-pointer rounded-2xl border-2 border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-md ${
+      className={`group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 transition-all hover:border-accent/40 hover:shadow-md shadow-sm ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       }`}
       onClick={disabled ? undefined : onClick}
