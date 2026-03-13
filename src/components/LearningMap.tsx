@@ -64,7 +64,7 @@ function BuildingLabel({ name }: { name: string }) {
   );
 }
 
-export function LearningMap({ course, progress, onLessonClick }: LearningMapProps) {
+export function LearningMap({ course, progress, avatarGender, rankLevel, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
   let foundCurrent = false;
