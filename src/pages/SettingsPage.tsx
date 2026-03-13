@@ -134,7 +134,7 @@ function SettingsSection({ title, children, delay = 0 }: { title: string; childr
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">{title}</h2>
-      <div className="divide-y divide-border rounded-2xl border bg-card">{children}</div>
+      <div className="divide-y divide-border/60 rounded-2xl border border-border/60 bg-card shadow-sm">{children}</div>
     </motion.div>
   );
 }
