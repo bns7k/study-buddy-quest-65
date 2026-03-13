@@ -1,4 +1,4 @@
-// Deep old professor mumbling - short, low, slow utterances
+// Deep old professor mumbling - short phrase-like utterances, gibberish language
 
 let audioCtx: AudioContext | null = null;
 
@@ -7,58 +7,93 @@ function getCtx() {
   return audioCtx;
 }
 
-export function playMumbleChar(char: string) {
-  if (" \n.,!?…\"'".includes(char)) return;
+// Formant frequencies for vowel-like sounds (F1, F2 pairs) - very deep male
+const FORMANTS: [number, number][] = [
+  [90, 280],   // "uh"
+  [85, 320],   // "oh" 
+  [95, 250],   // "mm"
+  [80, 300],   // "hm"
+  [100, 270],  // "ah" deep
+];
 
+function playFormant(f1: number, f2: number, duration: number, volume: number) {
   const ctx = getCtx();
   const now = ctx.currentTime;
 
-  // Very deep base frequencies (70-130 Hz range)
-  const base = 70 + Math.random() * 60;
-  const duration = 0.09 + Math.random() * 0.04;
+  // Fundamental voice (very deep)
+  const fundamental = ctx.createOscillator();
+  fundamental.type = "sawtooth";
+  const pitch = 55 + Math.random() * 25; // 55-80 Hz, very deep
+  fundamental.frequency.setValueAtTime(pitch, now);
+  fundamental.frequency.linearRampToValueAtTime(pitch * (0.9 + Math.random() * 0.1), now + duration);
 
-  // Main voice - triangle wave for softer, warmer tone
-  const osc = ctx.createOscillator();
-  osc.type = "triangle";
-  osc.frequency.setValueAtTime(base, now);
-  // Gentle pitch drift down like an old man trailing off
-  osc.frequency.linearRampToValueAtTime(base * 0.92, now + duration);
+  // Formant 1 (throat resonance)
+  const filt1 = ctx.createBiquadFilter();
+  filt1.type = "bandpass";
+  filt1.frequency.setValueAtTime(f1, now);
+  filt1.Q.setValueAtTime(5, now);
 
-  // Second harmonic for richness
-  const osc2 = ctx.createOscillator();
-  osc2.type = "sine";
-  osc2.frequency.setValueAtTime(base * 1.5, now);
-  osc2.frequency.linearRampToValueAtTime(base * 1.4, now + duration);
+  // Formant 2 (mouth shape)
+  const filt2 = ctx.createBiquadFilter();
+  filt2.type = "bandpass";
+  filt2.frequency.setValueAtTime(f2, now);
+  filt2.Q.setValueAtTime(4, now);
 
-  // Low-pass filter - very muffled, like speaking through a beard
-  const filter = ctx.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.setValueAtTime(350 + Math.random() * 100, now);
-  filter.Q.setValueAtTime(1.5, now);
+  // Overall lowpass to keep it muffled
+  const lp = ctx.createBiquadFilter();
+  lp.type = "lowpass";
+  lp.frequency.setValueAtTime(500, now);
 
-  // Volume envelope - soft attack, quick fade
+  // Envelope - natural speech shape
   const gain = ctx.createGain();
+  const attack = duration * 0.15;
+  const release = duration * 0.3;
   gain.gain.setValueAtTime(0, now);
-  gain.gain.linearRampToValueAtTime(0.07, now + 0.015);
-  gain.gain.linearRampToValueAtTime(0.04, now + duration * 0.5);
+  gain.gain.linearRampToValueAtTime(volume, now + attack);
+  gain.gain.setValueAtTime(volume * 0.85, now + duration - release);
   gain.gain.linearRampToValueAtTime(0, now + duration);
 
-  const gain2 = ctx.createGain();
-  gain2.gain.setValueAtTime(0, now);
-  gain2.gain.linearRampToValueAtTime(0.025, now + 0.015);
-  gain2.gain.linearRampToValueAtTime(0, now + duration);
+  // Route: fundamental -> formants (parallel) -> lowpass -> output
+  const merge = ctx.createGain();
+  merge.gain.setValueAtTime(1, now);
 
-  osc.connect(filter);
-  filter.connect(gain);
+  fundamental.connect(filt1);
+  fundamental.connect(filt2);
+  filt1.connect(merge);
+  filt2.connect(merge);
+  merge.connect(lp);
+  lp.connect(gain);
   gain.connect(ctx.destination);
 
-  osc2.connect(gain2);
-  gain2.connect(ctx.destination);
+  fundamental.start(now);
+  fundamental.stop(now + duration);
+}
 
-  osc.start(now);
-  osc.stop(now + duration);
-  osc2.start(now);
-  osc2.stop(now + duration);
+// Speak a short gibberish phrase (2-5 syllables) — called once per dialogue bubble
+let speaking = false;
+
+export function speakMumble() {
+  if (speaking) return;
+  speaking = true;
+
+  const ctx = getCtx();
+  const syllables = 2 + Math.floor(Math.random() * 4); // 2-5 syllables
+  let time = 0;
+
+  for (let i = 0; i < syllables; i++) {
+    const formant = FORMANTS[Math.floor(Math.random() * FORMANTS.length)];
+    const dur = 0.1 + Math.random() * 0.12; // 100-220ms per syllable
+    const vol = 0.06 + Math.random() * 0.03;
+    const gap = 0.03 + Math.random() * 0.05; // small gap between syllables
+
+    setTimeout(() => {
+      playFormant(formant[0], formant[1], dur, vol);
+    }, time * 1000);
+
+    time += dur + gap;
+  }
+
+  setTimeout(() => { speaking = false; }, time * 1000 + 200);
 }
 
 export function resumeAudio() {
