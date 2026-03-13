@@ -153,7 +153,7 @@ function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: s
       const interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
-          if (voice && i % 2 === 0) {
+          if (voice && i % 3 === 0) {
             resumeAudio();
             playMumbleChar(text[i]);
           }
