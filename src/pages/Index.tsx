@@ -6,7 +6,9 @@ import { RankBadge } from "@/components/RankBadge";
 import { LearningMap } from "@/components/LearningMap";
 import { MentorPanel } from "@/components/MentorPanel";
 import { RankUpOverlay } from "@/components/RankUpOverlay";
+import { AvatarSelection } from "@/components/AvatarSelection";
 import { useProgress } from "@/hooks/useProgress";
+import { useAvatar } from "@/hooks/useAvatar";
 import { getAllCourses } from "@/data/courses";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
@@ -34,6 +36,7 @@ function getMentorMessage(completedCount: number): string {
 
 const Index = () => {
   const { progress } = useProgress();
+  const { avatar, chooseAvatar } = useAvatar();
   const navigate = useNavigate();
   const courses = getAllCourses();
   const [supportOpen, setSupportOpen] = useState(false);
@@ -58,6 +61,10 @@ const Index = () => {
   const handleLessonClick = (courseId: string, moduleId: string, lessonId: string) => {
     navigate(`/course/${courseId}/module/${moduleId}/lesson/${lessonId}`);
   };
+
+  if (!avatar.chosen) {
+    return <AvatarSelection onSelect={chooseAvatar} />;
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -112,6 +119,8 @@ const Index = () => {
         <LearningMap
           course={mainCourse}
           progress={progress}
+          avatarGender={avatar.gender || "male"}
+          rankLevel={currentRank.level}
           onLessonClick={handleLessonClick}
         />
       </main>

@@ -3,7 +3,9 @@ import { Lock, Check } from "lucide-react";
 import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
+import { MapAvatar } from "@/components/MapAvatar";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
+import { AvatarGender } from "@/lib/avatars";
 import { ComponentType, SVGProps } from "react";
 
 interface AcademyBuilding {
@@ -38,6 +40,8 @@ function getPathX(index: number): number {
 interface LearningMapProps {
   course: Course;
   progress: UserProgress;
+  avatarGender: AvatarGender;
+  rankLevel: number;
   onLessonClick: (courseId: string, moduleId: string, lessonId: string) => void;
 }
 
@@ -60,7 +64,7 @@ function BuildingLabel({ name }: { name: string }) {
   );
 }
 
-export function LearningMap({ course, progress, onLessonClick }: LearningMapProps) {
+export function LearningMap({ course, progress, avatarGender, rankLevel, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
   let foundCurrent = false;
@@ -180,13 +184,7 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
           >
             {/* Avatar on current node */}
             {isCurrent && (
-              <motion.div
-                animate={{ y: [-4, 0, -4] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-                className="mb-1 text-lg"
-              >
-                🧑‍🎓
-              </motion.div>
+              <MapAvatar gender={avatarGender} rankLevel={rankLevel} />
             )}
             <motion.button
               onClick={() => {
