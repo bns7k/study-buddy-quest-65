@@ -183,7 +183,7 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5"
+            className="rounded-2xl border border-accent/25 bg-accent/5 p-5"
           >
             <div className="flex items-center gap-3 mb-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
