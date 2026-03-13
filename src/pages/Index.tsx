@@ -115,6 +115,8 @@ const Index = () => {
         <LearningMap
           course={mainCourse}
           progress={progress}
+          avatarGender={avatar.gender || "male"}
+          rankLevel={currentRank.level}
           onLessonClick={handleLessonClick}
         />
       </main>
