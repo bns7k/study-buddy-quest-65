@@ -325,7 +325,7 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="rounded-2xl border-2 border-border bg-card p-8 text-center"
+            className="rounded-2xl border border-border/60 bg-card p-8 text-center shadow-sm"
           >
             <Brain className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" />
             <h3 className="font-extrabold text-foreground mb-1">No review data yet</h3>
