@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft, FastForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allBadges } from "@/data/badges";
 import { UserProgress } from "@/types/course";
 import confetti from "canvas-confetti";
+import { SupportDialog, shouldShowSupportPrompt } from "@/components/SupportDialog";
 
 interface LessonCompleteProps {
   correctCount: number;
