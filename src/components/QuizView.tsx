@@ -158,7 +158,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
 
               <div className="space-y-3">
                 {question.options.map((option, idx) => {
-                  let borderClass = "border-border hover:border-primary/40";
+                  let borderClass = "border-border/60 hover:border-accent/40";
                   let bgClass = "bg-card";
                   if (showFeedback) {
                     if (idx === question.correctIndex) {
