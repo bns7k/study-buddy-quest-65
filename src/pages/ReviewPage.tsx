@@ -305,7 +305,7 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border-2 border-border bg-card p-5"
+            className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
           >
             <h3 className="font-extrabold text-foreground mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-success" /> Mastery Progress
