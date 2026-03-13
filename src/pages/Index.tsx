@@ -62,6 +62,10 @@ const Index = () => {
     navigate(`/course/${courseId}/module/${moduleId}/lesson/${lessonId}`);
   };
 
+  if (!avatar.chosen) {
+    return <AvatarSelection onSelect={chooseAvatar} />;
+  }
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-50 border-b border-accent/10 bg-card/90 backdrop-blur-lg">
