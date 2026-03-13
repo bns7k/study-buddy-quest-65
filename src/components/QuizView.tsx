@@ -216,7 +216,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
           )}
 
           {showNextButton && (
-            <Button onClick={handleNext} className="w-full gap-2 rounded-xl font-bold h-12 text-base">
+            <Button onClick={handleNext} className="w-full gap-2 rounded-xl font-bold h-12 text-base bg-accent text-accent-foreground hover:bg-accent/90 shadow-md">
               {currentIndex < questions.length - 1 ? (
                 <>Next <ArrowRight className="h-4 w-4" /></>
               ) : (
