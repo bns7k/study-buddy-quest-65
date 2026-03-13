@@ -3,7 +3,9 @@ import { Lock, Check } from "lucide-react";
 import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
+import { MapAvatar } from "@/components/MapAvatar";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
+import { AvatarGender } from "@/lib/avatars";
 import { ComponentType, SVGProps } from "react";
 
 interface AcademyBuilding {
