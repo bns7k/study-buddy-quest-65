@@ -23,6 +23,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [specialAnswered, setSpecialAnswered] = useState(false);
+  const [correctBounce, setCorrectBounce] = useState(false);
 
   const question = questions[currentIndex];
   const qType = question?.questionType || "multiple_choice";
