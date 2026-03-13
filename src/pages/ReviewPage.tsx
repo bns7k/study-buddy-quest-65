@@ -139,11 +139,11 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10">
+              <GraduationCap className="h-5 w-5 text-accent" />
             </div>
             <span className="text-lg font-black text-foreground">Review</span>
           </div>
@@ -161,17 +161,17 @@ export default function ReviewPage() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-3">
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border-2 border-border bg-card p-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
             <Calendar className="mx-auto h-5 w-5 text-streak mb-1" />
             <p className="text-2xl font-black text-foreground">{dueQuestions.length}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Due Today</p>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="rounded-2xl border-2 border-border bg-card p-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
             <Flame className="mx-auto h-5 w-5 text-streak mb-1" />
             <p className="text-2xl font-black text-foreground">{progress.reviewStreak || 0}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Review Streak</p>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl border-2 border-border bg-card p-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
             <Star className="mx-auto h-5 w-5 text-success fill-success mb-1" />
             <p className="text-2xl font-black text-foreground">{masteredCount}</p>
             <p className="text-[10px] font-bold text-muted-foreground">Mastered</p>
@@ -183,10 +183,10 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5"
+            className="rounded-2xl border border-accent/25 bg-accent/5 p-5"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent text-accent-foreground">
                 <Target className="h-5 w-5" />
               </div>
               <div>
@@ -274,7 +274,7 @@ export default function ReviewPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className="group cursor-pointer rounded-2xl border-2 border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-md"
+                className="group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 transition-all hover:border-accent/40 hover:shadow-md shadow-sm"
                 onClick={() => startSession({
                   title: topic.moduleName,
                   subtitle: `${topic.questions.length} weak questions from ${topic.courseName}`,
@@ -305,7 +305,7 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border-2 border-border bg-card p-5"
+            className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
           >
             <h3 className="font-extrabold text-foreground mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-success" /> Mastery Progress
@@ -325,7 +325,7 @@ export default function ReviewPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="rounded-2xl border-2 border-border bg-card p-8 text-center"
+            className="rounded-2xl border border-border/60 bg-card p-8 text-center shadow-sm"
           >
             <Brain className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" />
             <h3 className="font-extrabold text-foreground mb-1">No review data yet</h3>
@@ -352,7 +352,7 @@ function ReviewOptionCard({
     <motion.div
       whileHover={!disabled ? { scale: 1.01 } : {}}
       whileTap={!disabled ? { scale: 0.99 } : {}}
-      className={`group cursor-pointer rounded-2xl border-2 border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-md ${
+      className={`group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 transition-all hover:border-accent/40 hover:shadow-md shadow-sm ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       }`}
       onClick={disabled ? undefined : onClick}

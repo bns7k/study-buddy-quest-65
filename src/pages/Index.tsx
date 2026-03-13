@@ -87,7 +87,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <header className="sticky top-0 z-50 border-b border-accent/10 bg-card/90 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg shadow-sm">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             {selectedBuilding ? (

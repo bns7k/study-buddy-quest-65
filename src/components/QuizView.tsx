@@ -158,7 +158,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
 
               <div className="space-y-3">
                 {question.options.map((option, idx) => {
-                  let borderClass = "border-border hover:border-primary/40";
+                  let borderClass = "border-border/60 hover:border-accent/40";
                   let bgClass = "bg-card";
                   if (showFeedback) {
                     if (idx === question.correctIndex) {
@@ -171,15 +171,15 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
                       borderClass = "border-border opacity-50";
                     }
                   } else if (idx === selectedOption) {
-                    borderClass = "border-primary";
-                    bgClass = "bg-primary/5";
+                    borderClass = "border-accent";
+                    bgClass = "bg-accent/5";
                   }
 
                   return (
                     <motion.button
                       key={idx}
                       onClick={() => handleSelect(idx)}
-                      className={`w-full rounded-xl border-2 p-4 text-left font-semibold transition-all ${borderClass} ${bgClass}`}
+                      className={`w-full rounded-2xl border p-4 text-left font-semibold transition-all shadow-sm ${borderClass} ${bgClass}`}
                       whileHover={!showFeedback ? { scale: 1.01 } : {}}
                       whileTap={!showFeedback ? { scale: 0.99 } : {}}
                     >
@@ -216,7 +216,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
           )}
 
           {showNextButton && (
-            <Button onClick={handleNext} className="w-full gap-2 rounded-xl font-bold h-12 text-base">
+            <Button onClick={handleNext} className="w-full gap-2 rounded-xl font-bold h-12 text-base bg-accent text-accent-foreground hover:bg-accent/90 shadow-md">
               {currentIndex < questions.length - 1 ? (
                 <>Next <ArrowRight className="h-4 w-4" /></>
               ) : (
