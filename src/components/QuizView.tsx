@@ -34,7 +34,11 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
     setSelectedOption(idx);
     setShowFeedback(true);
     const correct = idx === question.correctIndex;
-    if (correct) setCorrectCount((c) => c + 1);
+    if (correct) {
+      setCorrectCount((c) => c + 1);
+      setCorrectBounce(true);
+      setTimeout(() => setCorrectBounce(false), 600);
+    }
     onAnswer?.(question.id, correct);
   };
 
