@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
-import { Lock } from "lucide-react";
+import { Lock, SkipForward } from "lucide-react";
+import { playMumbleChar, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
   onComplete: (gender: AvatarGender) => void;
