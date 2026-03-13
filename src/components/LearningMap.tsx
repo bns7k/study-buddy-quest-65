@@ -40,6 +40,8 @@ function getPathX(index: number): number {
 interface LearningMapProps {
   course: Course;
   progress: UserProgress;
+  avatarGender: AvatarGender;
+  rankLevel: number;
   onLessonClick: (courseId: string, moduleId: string, lessonId: string) => void;
 }
 
