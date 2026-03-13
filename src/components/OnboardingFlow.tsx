@@ -143,7 +143,7 @@ function ContinueButton({ onClick, delay = 2, label = "Continue" }: { onClick: (
   );
 }
 
-function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?: number; speed?: number }) {
+function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: string; delay?: number; speed?: number; voice?: boolean }) {
   const [displayed, setDisplayed] = useState("");
 
   useEffect(() => {
@@ -153,6 +153,10 @@ function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?:
       const interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
+          if (voice && i % 2 === 0) {
+            resumeAudio();
+            playMumbleChar(text[i]);
+          }
           i++;
         } else {
           clearInterval(interval);
@@ -160,7 +164,7 @@ function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?:
       }, speed);
     }, delay * 1000);
     return () => clearTimeout(timeout);
-  }, [text, delay, speed]);
+  }, [text, delay, speed, voice]);
 
   return (
     <p className="text-sm text-foreground leading-relaxed">
