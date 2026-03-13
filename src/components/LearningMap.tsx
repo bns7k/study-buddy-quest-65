@@ -136,32 +136,7 @@ export function LearningMap({ course, progress, avatarGender, rankLevel, moduleF
         })}
       </svg>
 
-      {/* Academy Buildings with banner labels */}
-      {BUILDINGS.map((building) => {
-        if (building.afterNodeIndex >= nodes.length) return null;
-        const y = building.afterNodeIndex * nodeSpacing + 40;
-        const side = building.afterNodeIndex % 2 === 0 ? 1 : -1;
-        const BuildingIcon = building.Icon;
-        return (
-          <motion.div
-            key={building.name}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, type: "spring", damping: 20 }}
-            className="absolute flex flex-col items-center"
-            style={{
-              top: y - 28,
-              left: `calc(50% + ${side * 90}px)`,
-              transform: "translateX(-50%)",
-            }}
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-accent/20 bg-card/80 shadow-md backdrop-blur-sm">
-              <BuildingIcon className="h-8 w-8 text-accent" />
-            </div>
-            <BuildingLabel name={building.name} />
-          </motion.div>
-        );
-      })}
+
 
       {/* Lesson nodes */}
       {nodes.map((node, i) => {
