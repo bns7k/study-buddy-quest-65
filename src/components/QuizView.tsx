@@ -179,7 +179,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
                     <motion.button
                       key={idx}
                       onClick={() => handleSelect(idx)}
-                      className={`w-full rounded-xl border-2 p-4 text-left font-semibold transition-all ${borderClass} ${bgClass}`}
+                      className={`w-full rounded-2xl border p-4 text-left font-semibold transition-all shadow-sm ${borderClass} ${bgClass}`}
                       whileHover={!showFeedback ? { scale: 1.01 } : {}}
                       whileTap={!showFeedback ? { scale: 0.99 } : {}}
                     >
