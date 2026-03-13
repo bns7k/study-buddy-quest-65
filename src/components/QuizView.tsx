@@ -72,7 +72,14 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm font-bold text-muted-foreground">
           <span>Question {currentIndex + 1} of {questions.length}</span>
-          <span>{correctCount} correct</span>
+          <motion.span
+            animate={correctBounce ? { scale: [1, 1.4, 1], y: [0, -8, 0] } : {}}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="text-success font-black"
+          >
+            {correctCount} correct
+          </motion.span>
+        </div>
         </div>
         <Progress value={progressPercent} className="h-2.5" />
       </div>

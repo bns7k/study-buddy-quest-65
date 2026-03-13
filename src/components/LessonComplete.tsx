@@ -119,18 +119,24 @@ export function LessonComplete({
 
       {newBadges.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", delay: 0.5, stiffness: 200 }}
           className="w-full rounded-2xl border-2 border-accent/30 bg-accent/5 p-4"
         >
           <p className="mb-2 text-sm font-bold text-accent">New Badge{newBadges.length > 1 ? "s" : ""} Unlocked!</p>
           <div className="flex items-center justify-center gap-3">
-            {newBadges.map((badge) => (
-              <div key={badge.id} className="flex flex-col items-center gap-1">
+            {newBadges.map((badge, i) => (
+              <motion.div
+                key={badge.id}
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", delay: 0.7 + i * 0.15, stiffness: 260, damping: 15 }}
+                className="flex flex-col items-center gap-1"
+              >
                 <span className="text-3xl">{badge.emoji}</span>
                 <span className="text-xs font-bold text-foreground">{badge.title}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
