@@ -61,15 +61,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-accent/10 bg-card/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15">
-              <GuildCrest className="h-6 w-6 text-primary" />
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20">
+              <GuildCrest className="h-6 w-6 text-accent" />
             </div>
             <div className="hidden sm:block">
               <span className="text-sm font-black text-foreground tracking-tight">Capital Guild</span>
-              <span className="block text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Foundation Academy</span>
+              <div className="flex items-center gap-1.5">
+                <div className="h-px w-3 bg-accent/30" />
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-accent/60">Foundation Academy</span>
+                <div className="h-px w-3 bg-accent/30" />
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -91,10 +95,17 @@ const Index = () => {
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4 text-center">
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 text-center">
           <h1 className="text-2xl font-black text-foreground">Foundation Academy</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {mainCourse.title} · {progress.completedLessons.length} lessons completed
+          <div className="mt-1 flex items-center justify-center gap-2">
+            <div className="h-px w-8 bg-accent/20" />
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              {mainCourse.title}
+            </p>
+            <div className="h-px w-8 bg-accent/20" />
+          </div>
+          <p className="mt-1.5 text-sm text-accent font-bold">
+            {progress.completedLessons.length} lessons completed
           </p>
         </motion.div>
 
