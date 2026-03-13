@@ -36,6 +36,7 @@ function getMentorMessage(completedCount: number): string {
 
 const Index = () => {
   const { progress } = useProgress();
+  const { avatar, chooseAvatar } = useAvatar();
   const navigate = useNavigate();
   const courses = getAllCourses();
   const [supportOpen, setSupportOpen] = useState(false);
