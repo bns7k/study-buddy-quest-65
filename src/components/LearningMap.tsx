@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import { Lock, Check } from "lucide-react";
-import { Course, Lesson, Module } from "@/types/course";
+import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
+import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
+import { MapBackground } from "@/components/MapBackground";
+import { ComponentType, SVGProps } from "react";
 
 interface AcademyBuilding {
   name: string;
-  emoji: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
   afterNodeIndex: number;
 }
 
@@ -18,14 +20,13 @@ interface MapNode {
 }
 
 const BUILDINGS: AcademyBuilding[] = [
-  { name: "Lecture Hall", emoji: "🏛️", afterNodeIndex: 3 },
-  { name: "Guild Library", emoji: "📚", afterNodeIndex: 9 },
-  { name: "Market Yard", emoji: "🏪", afterNodeIndex: 18 },
-  { name: "Risk Observatory", emoji: "🔭", afterNodeIndex: 30 },
+  { name: "Lecture Hall", Icon: LectureHallIcon, afterNodeIndex: 3 },
+  { name: "Guild Library", Icon: LibraryIcon, afterNodeIndex: 9 },
+  { name: "Market Yard", Icon: MarketYardIcon, afterNodeIndex: 18 },
+  { name: "Risk Observatory", Icon: ObservatoryIcon, afterNodeIndex: 30 },
 ];
 
-function getPathX(index: number, total: number): number {
-  // Zigzag pattern
+function getPathX(index: number): number {
   const amplitude = 60;
   const segment = index % 4;
   if (segment === 0) return 0;
@@ -43,7 +44,6 @@ interface LearningMapProps {
 export function LearningMap({ course, progress, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
-  // Flatten all lessons into a linear path
   let foundCurrent = false;
   for (const mod of course.modules) {
     if (mod.isBonus) continue;
@@ -62,16 +62,13 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
     }
   }
 
-  // If all completed, no current
-  if (!foundCurrent && nodes.length > 0 && nodes.every((n) => n.status === "completed")) {
-    // all done
-  }
-
   const nodeSpacing = 90;
   const mapHeight = nodes.length * nodeSpacing + 200;
 
   return (
     <div className="relative mx-auto w-full max-w-sm" style={{ height: mapHeight }}>
+      <MapBackground />
+
       {/* SVG path connecting nodes */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
@@ -80,9 +77,9 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
       >
         {nodes.map((node, i) => {
           if (i === 0) return null;
-          const x1 = getPathX(i - 1, nodes.length);
+          const x1 = getPathX(i - 1);
           const y1 = (i - 1) * nodeSpacing + 40;
-          const x2 = getPathX(i, nodes.length);
+          const x2 = getPathX(i);
           const y2 = i * nodeSpacing + 40;
           const midY = (y1 + y2) / 2;
           const isCompleted = nodes[i - 1].status === "completed";
@@ -100,11 +97,12 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
         })}
       </svg>
 
-      {/* Buildings */}
+      {/* Academy Buildings */}
       {BUILDINGS.map((building) => {
         if (building.afterNodeIndex >= nodes.length) return null;
         const y = building.afterNodeIndex * nodeSpacing + 40;
         const side = building.afterNodeIndex % 2 === 0 ? 1 : -1;
+        const BuildingIcon = building.Icon;
         return (
           <motion.div
             key={building.name}
@@ -113,12 +111,12 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
             transition={{ delay: 0.3 }}
             className="absolute flex flex-col items-center gap-1"
             style={{
-              top: y - 20,
+              top: y - 24,
               left: `calc(50% + ${side * 90}px)`,
               transform: "translateX(-50%)",
             }}
           >
-            <span className="text-2xl">{building.emoji}</span>
+            <BuildingIcon className="h-10 w-10 text-primary" />
             <span className="text-[10px] font-bold text-muted-foreground whitespace-nowrap">
               {building.name}
             </span>
@@ -128,7 +126,7 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
 
       {/* Lesson nodes */}
       {nodes.map((node, i) => {
-        const x = getPathX(i, nodes.length);
+        const x = getPathX(i);
         const y = i * nodeSpacing + 40;
         const isCurrent = node.status === "current";
         const isCompleted = node.status === "completed";
@@ -147,7 +145,6 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
               transform: "translateX(-50%)",
             }}
           >
-            {/* Avatar on current node */}
             {isCurrent && (
               <motion.div
                 animate={{ y: [-4, 0, -4] }}
@@ -182,7 +179,6 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
                 <span className="text-base">⭐</span>
               )}
 
-              {/* Glow ring for current */}
               {isCurrent && (
                 <motion.div
                   className="absolute inset-0 rounded-full border-2 border-accent"
@@ -192,7 +188,6 @@ export function LearningMap({ course, progress, onLessonClick }: LearningMapProp
               )}
             </motion.button>
 
-            {/* Lesson title */}
             <p
               className={`mt-1.5 max-w-[100px] text-center text-[10px] font-bold leading-tight ${
                 isLocked ? "text-muted-foreground/50" : "text-foreground/80"
