@@ -149,13 +149,15 @@ function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: s
   useEffect(() => {
     setDisplayed("");
     let i = 0;
+    let mumbled = false;
     const timeout = setTimeout(() => {
       const interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
-          if (voice && i % 3 === 0) {
+          if (voice && !mumbled) {
+            mumbled = true;
             resumeAudio();
-            playMumbleChar(text[i]);
+            speakMumble();
           }
           i++;
         } else {
