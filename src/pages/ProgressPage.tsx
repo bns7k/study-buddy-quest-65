@@ -10,7 +10,6 @@ import { BottomNav } from "@/components/BottomNav";
 export default function ProgressPage() {
   const { progress, getModuleProgress } = useProgress();
 
-  // Weekly XP chart data (last 7 days)
   const chartData = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (6 - i));
@@ -22,7 +21,6 @@ export default function ProgressPage() {
   const todayXp = chartData[chartData.length - 1]?.xp || 0;
   const weekTotal = chartData.reduce((sum, d) => sum + d.xp, 0);
 
-  // Course progress
   const courseProgress = getAllCourses().map((course) => {
     const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
     const completed = allLessonIds.filter((id) => progress.completedLessons.includes(id)).length;
@@ -34,17 +32,16 @@ export default function ProgressPage() {
     };
   });
 
-  // Best/worst scores
   const scores = Object.entries(progress.lessonScores);
   const avgScore = scores.length > 0 ? Math.round(scores.reduce((s, [, v]) => s + v, 0) / scores.length) : 0;
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10">
+              <GraduationCap className="h-5 w-5 text-accent" />
             </div>
             <span className="text-lg font-black text-foreground">Progress</span>
           </div>
@@ -53,12 +50,11 @@ export default function ProgressPage() {
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6 space-y-6">
-        {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
           {[
             { icon: Zap, label: "Total XP", value: progress.xp.toLocaleString(), color: "text-xp", bg: "bg-xp/10" },
             { icon: Flame, label: "Day Streak", value: `${progress.streak} days`, color: "text-streak", bg: "bg-streak/10" },
-            { icon: Trophy, label: "Lessons Done", value: progress.completedLessons.length.toString(), color: "text-primary", bg: "bg-primary/10" },
+            { icon: Trophy, label: "Lessons Done", value: progress.completedLessons.length.toString(), color: "text-accent", bg: "bg-accent/10" },
             { icon: TrendingUp, label: "Avg Score", value: `${avgScore}%`, color: "text-accent", bg: "bg-accent/10" },
           ].map((stat, i) => (
             <motion.div
@@ -66,7 +62,7 @@ export default function ProgressPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="rounded-2xl border-2 border-border bg-card p-4"
+              className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm"
             >
               <div className={`mb-2 flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg}`}>
                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
@@ -77,16 +73,15 @@ export default function ProgressPage() {
           ))}
         </div>
 
-        {/* Weekly Activity Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="rounded-2xl border-2 border-border bg-card p-5"
+          className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm"
         >
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-extrabold text-foreground">Weekly Activity</h3>
-            <span className="text-sm font-bold text-xp">{weekTotal} XP this week</span>
+            <span className="text-sm font-bold text-accent">{weekTotal} XP this week</span>
           </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
@@ -94,30 +89,29 @@ export default function ProgressPage() {
                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700 }} />
                 <YAxis hide />
                 <Tooltip
-                  contentStyle={{ borderRadius: 12, border: "none", fontWeight: 700 }}
+                  contentStyle={{ borderRadius: 12, border: "none", fontWeight: 700, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
                   cursor={{ fill: "hsl(var(--muted))" }}
                 />
-                <Bar dataKey="xp" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="xp" fill="hsl(var(--accent))" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
           {todayXp > 0 && (
-            <p className="mt-2 text-center text-sm font-bold text-primary">🔥 {todayXp} XP earned today!</p>
+            <p className="mt-2 text-center text-sm font-bold text-accent">🔥 {todayXp} XP earned today!</p>
           )}
         </motion.div>
 
-        {/* Course Progress */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
           <h3 className="mb-3 font-extrabold text-foreground flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-primary" /> Course Progress
+            <BookOpen className="h-4 w-4 text-accent" /> Course Progress
           </h3>
           <div className="space-y-3">
             {courseProgress.map((cp) => (
-              <div key={cp.id} className="rounded-2xl border-2 border-border bg-card p-4">
+              <div key={cp.id} className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{cp.emoji}</span>
                   <div className="flex-1 min-w-0">

@@ -21,21 +21,21 @@ export function LessonIntro({ lesson, moduleName, weekNumber, onStart }: LessonI
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col items-center text-center"
     >
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10">
-        <Target className="h-10 w-10 text-primary" />
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-accent/10">
+        <Target className="h-10 w-10 text-accent" />
       </div>
 
-      <p className="text-xs font-bold uppercase tracking-wider text-primary">
+      <p className="text-xs font-bold uppercase tracking-wider text-accent">
         Week {weekNumber} — {moduleName}
       </p>
       <h1 className="mt-2 text-2xl font-black text-foreground">{lesson.title}</h1>
 
-      <div className="mt-6 flex items-center justify-center gap-4">
-        <div className="flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2">
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <div className="flex items-center gap-1.5 rounded-xl bg-card border border-border/60 px-3 py-2 shadow-sm">
           <Clock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-bold text-muted-foreground">{duration} min</span>
         </div>
-        <div className="flex items-center gap-1.5 rounded-xl bg-muted px-3 py-2">
+        <div className="flex items-center gap-1.5 rounded-xl bg-card border border-border/60 px-3 py-2 shadow-sm">
           <HelpCircle className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-bold text-muted-foreground">{lesson.questions.length} questions</span>
         </div>
@@ -45,14 +45,14 @@ export function LessonIntro({ lesson, moduleName, weekNumber, onStart }: LessonI
         </div>
       </div>
 
-      <div className="mt-8 w-full rounded-2xl border-2 border-border bg-card p-6 text-left">
+      <div className="mt-8 w-full rounded-2xl border border-border/60 bg-card p-6 text-left shadow-sm">
         <h3 className="mb-3 font-extrabold text-foreground">What you'll learn</h3>
         <p className="text-sm leading-relaxed text-foreground/80">{lesson.explanation}</p>
         {lesson.learningObjectives && lesson.learningObjectives.length > 0 && (
           <ul className="mt-4 space-y-2">
             {lesson.learningObjectives.map((obj, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/10 text-xs font-bold text-accent">
                   {i + 1}
                 </span>
                 {obj}
@@ -64,7 +64,7 @@ export function LessonIntro({ lesson, moduleName, weekNumber, onStart }: LessonI
 
       <Button
         onClick={onStart}
-        className="mt-8 w-full gap-2 rounded-xl font-bold h-14 text-lg"
+        className="mt-8 w-full gap-2 rounded-xl font-bold h-14 text-lg bg-accent text-accent-foreground hover:bg-accent/90 shadow-md"
       >
         Start Lesson <ArrowRight className="h-5 w-5" />
       </Button>
