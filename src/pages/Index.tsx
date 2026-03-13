@@ -79,6 +79,36 @@ const Index = () => {
             );
           })}
         </div>
+
+        {/* Support Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: courses.length * 0.08 + 0.1 }}
+          className="mt-10 rounded-2xl border-2 border-dashed border-border bg-card p-6 text-center"
+        >
+          <span className="text-3xl">☕</span>
+          <h2 className="mt-3 text-lg font-extrabold text-foreground">Support the project</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+            Hi! I'm Benjamin, a finance master's student who got tired of learning from old, non-interactive slides.
+          </p>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+            So I started building a better way to study finance.
+          </p>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+            The app is free and built in my spare time.
+            <br />
+            If you find it useful, you can support the project with a coffee ☕
+          </p>
+          <a
+            href="https://buymeacoffee.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-accent-foreground transition-transform hover:scale-105"
+          >
+            ☕ Buy me a coffee
+          </a>
+        </motion.div>
       </main>
 
       <BottomNav />
