@@ -65,12 +65,13 @@ function BuildingLabel({ name }: { name: string }) {
   );
 }
 
-export function LearningMap({ course, progress, avatarGender, rankLevel, onLessonClick }: LearningMapProps) {
+export function LearningMap({ course, progress, avatarGender, rankLevel, moduleFilter, onLessonClick }: LearningMapProps) {
   const nodes: MapNode[] = [];
 
   let foundCurrent = false;
   for (const mod of course.modules) {
     if (mod.isBonus) continue;
+    if (moduleFilter && !moduleFilter.includes(mod.id)) continue;
     for (const lesson of mod.lessons) {
       const completed = progress.completedLessons.includes(lesson.id);
       let status: MapNode["status"];
