@@ -171,8 +171,8 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
                       borderClass = "border-border opacity-50";
                     }
                   } else if (idx === selectedOption) {
-                    borderClass = "border-primary";
-                    bgClass = "bg-primary/5";
+                    borderClass = "border-accent";
+                    bgClass = "bg-accent/5";
                   }
 
                   return (
