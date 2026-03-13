@@ -45,7 +45,11 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
 
   const handleSpecialAnswer = (correct: boolean) => {
     setSpecialAnswered(true);
-    if (correct) setCorrectCount((c) => c + 1);
+    if (correct) {
+      setCorrectCount((c) => c + 1);
+      setCorrectBounce(true);
+      setTimeout(() => setCorrectBounce(false), 600);
+    }
     onAnswer?.(question.id, correct);
   };
 
