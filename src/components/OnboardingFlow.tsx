@@ -149,13 +149,16 @@ function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: s
   useEffect(() => {
     setDisplayed("");
     let i = 0;
-    let mumbled = false;
+    let phraseCount = 0;
+    const maxPhrases = 2 + Math.floor(Math.random() * 2); // 2-3 phrases
     const timeout = setTimeout(() => {
       const interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
-          if (voice && !mumbled) {
-            mumbled = true;
+          // Trigger a mumble phrase at start and roughly every 30-50 chars
+          const triggerAt = phraseCount === 0 ? 0 : 30 + Math.floor(Math.random() * 20);
+          if (voice && phraseCount < maxPhrases && (phraseCount === 0 || i % triggerAt === 0) && i > phraseCount * 30) {
+            phraseCount++;
             resumeAudio();
             speakMumble();
           }
