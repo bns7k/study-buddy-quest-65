@@ -139,11 +139,11 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <GraduationCap className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10">
+              <GraduationCap className="h-5 w-5 text-accent" />
             </div>
             <span className="text-lg font-black text-foreground">Review</span>
           </div>
