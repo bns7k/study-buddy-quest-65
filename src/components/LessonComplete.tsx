@@ -172,6 +172,7 @@ export function LessonComplete({
           </Button>
         </div>
       </div>
+      <SupportDialog open={showSupport} onOpenChange={setShowSupport} />
     </motion.div>
   );
 }
