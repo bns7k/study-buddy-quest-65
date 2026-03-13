@@ -37,6 +37,15 @@ export function LessonComplete({
   const pct = Math.round((correctCount / totalCount) * 100);
   const currentBadges = allBadges.filter((b) => b.condition(progress));
   const newBadges = currentBadges.slice(previousBadgeCount);
+  const [showSupport, setShowSupport] = useState(false);
+
+  // Check if we should show support prompt (very rarely)
+  useEffect(() => {
+    if (shouldShowSupportPrompt()) {
+      const timer = setTimeout(() => setShowSupport(true), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Confetti on lesson complete
   useEffect(() => {
