@@ -184,13 +184,7 @@ export function LearningMap({ course, progress, avatarGender, rankLevel, onLesso
           >
             {/* Avatar on current node */}
             {isCurrent && (
-              <motion.div
-                animate={{ y: [-4, 0, -4] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-                className="mb-1 text-lg"
-              >
-                🧑‍🎓
-              </motion.div>
+              <MapAvatar gender={avatarGender} rankLevel={rankLevel} />
             )}
             <motion.button
               onClick={() => {
