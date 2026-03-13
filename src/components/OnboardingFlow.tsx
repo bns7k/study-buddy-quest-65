@@ -232,7 +232,7 @@ function IntroStep({ gender, onNext }: { gender: AvatarGender; onNext: () => voi
 function TypewriterText({ text, delay = 0 }: { text: string; delay?: number }) {
   const [displayed, setDisplayed] = useState("");
 
-  useState(() => {
+  useEffect(() => {
     let i = 0;
     const timeout = setTimeout(() => {
       const interval = setInterval(() => {
@@ -243,9 +243,10 @@ function TypewriterText({ text, delay = 0 }: { text: string; delay?: number }) {
           clearInterval(interval);
         }
       }, 30);
+      return () => clearInterval(interval);
     }, delay * 1000);
     return () => clearTimeout(timeout);
-  });
+  }, [text, delay]);
 
   return (
     <p className="text-sm text-foreground leading-relaxed min-h-[3rem]">
