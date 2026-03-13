@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
-import { Lock } from "lucide-react";
+import { Lock, SkipForward } from "lucide-react";
+import { playMumbleChar, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
   onComplete: (gender: AvatarGender) => void;
@@ -40,6 +41,18 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         </defs>
         <rect width="100%" height="100%" fill="url(#ob-grid)" />
       </svg>
+
+      {/* Skip button */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        onClick={() => { if (selectedGender) { handleFinish(); } else { setScene(4); } }}
+        className="fixed top-4 right-4 z-20 flex items-center gap-1.5 rounded-lg border border-muted/30 bg-card/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm transition-colors hover:bg-card hover:text-foreground"
+      >
+        <SkipForward className="h-3 w-3" />
+        Skip
+      </motion.button>
 
       {/* Scene indicator */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
@@ -130,7 +143,7 @@ function ContinueButton({ onClick, delay = 2, label = "Continue" }: { onClick: (
   );
 }
 
-function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?: number; speed?: number }) {
+function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: string; delay?: number; speed?: number; voice?: boolean }) {
   const [displayed, setDisplayed] = useState("");
 
   useEffect(() => {
@@ -140,6 +153,10 @@ function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?:
       const interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
+          if (voice && i % 2 === 0) {
+            resumeAudio();
+            playMumbleChar(text[i]);
+          }
           i++;
         } else {
           clearInterval(interval);
@@ -147,7 +164,7 @@ function TypewriterText({ text, delay = 0, speed = 25 }: { text: string; delay?:
       }, speed);
     }, delay * 1000);
     return () => clearTimeout(timeout);
-  }, [text, delay, speed]);
+  }, [text, delay, speed, voice]);
 
   return (
     <p className="text-sm text-foreground leading-relaxed">
