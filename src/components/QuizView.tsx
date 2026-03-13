@@ -80,7 +80,6 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
             {correctCount} correct
           </motion.span>
         </div>
-        </div>
         <Progress value={progressPercent} className="h-2.5" />
       </div>
 
