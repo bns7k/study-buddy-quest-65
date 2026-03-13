@@ -4,15 +4,7 @@ import { Course, Lesson } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
 import { MapAvatar } from "@/components/MapAvatar";
-import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { AvatarGender } from "@/lib/avatars";
-import { ComponentType, SVGProps } from "react";
-
-interface AcademyBuilding {
-  name: string;
-  Icon: ComponentType<SVGProps<SVGSVGElement>>;
-  afterNodeIndex: number;
-}
 
 interface MapNode {
   lesson: Lesson;
@@ -20,13 +12,6 @@ interface MapNode {
   courseId: string;
   status: "completed" | "current" | "locked";
 }
-
-const BUILDINGS: AcademyBuilding[] = [
-  { name: "Lecture Hall", Icon: LectureHallIcon, afterNodeIndex: 3 },
-  { name: "Guild Library", Icon: LibraryIcon, afterNodeIndex: 9 },
-  { name: "Market Yard", Icon: MarketYardIcon, afterNodeIndex: 18 },
-  { name: "Risk Observatory", Icon: ObservatoryIcon, afterNodeIndex: 30 },
-];
 
 function getPathX(index: number): number {
   const amplitude = 60;
