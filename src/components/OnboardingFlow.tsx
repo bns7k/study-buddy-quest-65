@@ -42,6 +42,18 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         <rect width="100%" height="100%" fill="url(#ob-grid)" />
       </svg>
 
+      {/* Skip button */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        onClick={() => { if (selectedGender) { handleFinish(); } else { setScene(4); } }}
+        className="fixed top-4 right-4 z-20 flex items-center gap-1.5 rounded-lg border border-muted/30 bg-card/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground backdrop-blur-sm transition-colors hover:bg-card hover:text-foreground"
+      >
+        <SkipForward className="h-3 w-3" />
+        Skip
+      </motion.button>
+
       {/* Scene indicator */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
         {[1, 2, 3, 4, 5, 6, 7].map((s) => (
