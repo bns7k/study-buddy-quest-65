@@ -23,6 +23,7 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [specialAnswered, setSpecialAnswered] = useState(false);
+  const [correctBounce, setCorrectBounce] = useState(false);
 
   const question = questions[currentIndex];
   const qType = question?.questionType || "multiple_choice";
@@ -34,13 +35,21 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
     setSelectedOption(idx);
     setShowFeedback(true);
     const correct = idx === question.correctIndex;
-    if (correct) setCorrectCount((c) => c + 1);
+    if (correct) {
+      setCorrectCount((c) => c + 1);
+      setCorrectBounce(true);
+      setTimeout(() => setCorrectBounce(false), 600);
+    }
     onAnswer?.(question.id, correct);
   };
 
   const handleSpecialAnswer = (correct: boolean) => {
     setSpecialAnswered(true);
-    if (correct) setCorrectCount((c) => c + 1);
+    if (correct) {
+      setCorrectCount((c) => c + 1);
+      setCorrectBounce(true);
+      setTimeout(() => setCorrectBounce(false), 600);
+    }
     onAnswer?.(question.id, correct);
   };
 
@@ -63,7 +72,13 @@ export function QuizView({ questions, onComplete, onAnswer }: QuizViewProps) {
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm font-bold text-muted-foreground">
           <span>Question {currentIndex + 1} of {questions.length}</span>
-          <span>{correctCount} correct</span>
+          <motion.span
+            animate={correctBounce ? { scale: [1, 1.4, 1], y: [0, -8, 0] } : {}}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="text-success font-black"
+          >
+            {correctCount} correct
+          </motion.span>
         </div>
         <Progress value={progressPercent} className="h-2.5" />
       </div>

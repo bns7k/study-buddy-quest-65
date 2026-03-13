@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Zap, Flame, Star, ArrowRight, RotateCcw, ArrowLeft, FastForward } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { allBadges } from "@/data/badges";
 import { UserProgress } from "@/types/course";
+import confetti from "canvas-confetti";
 
 interface LessonCompleteProps {
   correctCount: number;
@@ -35,18 +37,50 @@ export function LessonComplete({
   const currentBadges = allBadges.filter((b) => b.condition(progress));
   const newBadges = currentBadges.slice(previousBadgeCount);
 
+  // Confetti on lesson complete
+  useEffect(() => {
+    const duration = 2000;
+    const end = Date.now() + duration;
+    const colors = ["#FFD700", "#FF6B6B", "#4ECDC4", "#A855F7", "#F97316"];
+    
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors,
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors,
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center gap-5 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center"
+      className="relative flex flex-col items-center gap-5 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center overflow-hidden"
     >
+      {/* Glow effect */}
+      <div className="pointer-events-none absolute inset-0 rounded-3xl animate-pulse" style={{
+        background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 70%)",
+      }} />
+
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", delay: 0.2 }}
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10"
+        className="relative flex h-24 w-24 items-center justify-center rounded-full bg-primary/10"
       >
+        <div className="absolute inset-0 rounded-full animate-ping bg-primary/10" style={{ animationDuration: "2s" }} />
         <Trophy className="h-12 w-12 text-primary" />
       </motion.div>
 
@@ -85,18 +119,24 @@ export function LessonComplete({
 
       {newBadges.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ type: "spring", delay: 0.5, stiffness: 200 }}
           className="w-full rounded-2xl border-2 border-accent/30 bg-accent/5 p-4"
         >
           <p className="mb-2 text-sm font-bold text-accent">New Badge{newBadges.length > 1 ? "s" : ""} Unlocked!</p>
           <div className="flex items-center justify-center gap-3">
-            {newBadges.map((badge) => (
-              <div key={badge.id} className="flex flex-col items-center gap-1">
+            {newBadges.map((badge, i) => (
+              <motion.div
+                key={badge.id}
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", delay: 0.7 + i * 0.15, stiffness: 260, damping: 15 }}
+                className="flex flex-col items-center gap-1"
+              >
                 <span className="text-3xl">{badge.emoji}</span>
                 <span className="text-xs font-bold text-foreground">{badge.title}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
