@@ -274,7 +274,7 @@ export default function ReviewPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className="group cursor-pointer rounded-2xl border-2 border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-md"
+                className="group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 transition-all hover:border-accent/40 hover:shadow-md shadow-sm"
                 onClick={() => startSession({
                   title: topic.moduleName,
                   subtitle: `${topic.questions.length} weak questions from ${topic.courseName}`,
