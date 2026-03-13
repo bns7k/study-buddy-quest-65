@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { BookOpen } from "lucide-react";
