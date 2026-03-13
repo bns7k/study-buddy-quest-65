@@ -104,10 +104,23 @@ const SettingsPage = () => {
         </SettingsSection>
 
         {/* Reset */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-3">
           <Button variant="outline" className="w-full gap-2 text-destructive hover:text-destructive" onClick={resetSettings}>
             <RotateCcw className="h-4 w-4" />
             Reset All Settings
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full gap-2 text-destructive hover:text-destructive border-destructive/30 hover:bg-destructive/5"
+            onClick={() => {
+              if (window.confirm("This will erase ALL progress, settings, and restart the tutorial. Are you sure?")) {
+                localStorage.clear();
+                window.location.href = "/";
+              }
+            }}
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset All Progress & Restart Tutorial
           </Button>
         </motion.div>
       </main>
