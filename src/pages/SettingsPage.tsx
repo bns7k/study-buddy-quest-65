@@ -24,7 +24,7 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
           <button onClick={() => navigate(-1)} className="rounded-xl p-1.5 hover:bg-muted">
             <ArrowLeft className="h-5 w-5 text-foreground" />
