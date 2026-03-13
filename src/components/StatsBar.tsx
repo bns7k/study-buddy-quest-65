@@ -9,45 +9,29 @@ interface StatsBarProps {
 
 export function StatsBar({ xp, streak, completedCount }: StatsBarProps) {
   return (
-    <div className="flex items-center gap-4 md:gap-6">
+    <div className="flex items-center gap-3 md:gap-4">
       <motion.div
-        className="flex items-center gap-1.5 rounded-xl bg-xp/10 px-3 py-1.5 font-bold text-xp"
+        className="flex items-center gap-1.5 rounded-xl bg-xp/10 px-2.5 py-1.5 font-bold text-xp"
         whileHover={{ scale: 1.05 }}
       >
-        <Zap className="h-4 w-4 fill-current" />
-        <span className="text-sm">{xp} XP</span>
+        <Zap className="h-3.5 w-3.5 fill-current" />
+        <span className="text-xs">{xp}</span>
       </motion.div>
-      {streak > 0 && (
-        <motion.div
-          className="flex items-center gap-1.5 rounded-xl bg-streak/10 px-3 py-1.5 font-bold text-streak"
-          whileHover={{ scale: 1.05 }}
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ repeat: Infinity, repeatDelay: 3, duration: 0.6 }}
-        >
-          <motion.div
-            animate={{ rotate: [0, -10, 10, -5, 0], y: [0, -2, 0] }}
-            transition={{ repeat: Infinity, repeatDelay: 3, duration: 0.8 }}
-          >
-            <Flame className="h-4 w-4 fill-current" />
-          </motion.div>
-          <span className="text-sm">{streak}</span>
-        </motion.div>
-      )}
-      {streak === 0 && (
-        <motion.div
-          className="flex items-center gap-1.5 rounded-xl bg-streak/10 px-3 py-1.5 font-bold text-streak"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Flame className="h-4 w-4 fill-current" />
-          <span className="text-sm">{streak}</span>
-        </motion.div>
-      )}
       <motion.div
-        className="flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 font-bold text-primary"
+        className="flex items-center gap-1.5 rounded-xl bg-streak/10 px-2.5 py-1.5 font-bold text-streak"
+        whileHover={{ scale: 1.05 }}
+        animate={streak > 0 ? { scale: [1, 1.05, 1] } : {}}
+        transition={{ repeat: Infinity, repeatDelay: 4, duration: 0.5 }}
+      >
+        <Flame className="h-3.5 w-3.5 fill-current" />
+        <span className="text-xs">{streak}</span>
+      </motion.div>
+      <motion.div
+        className="flex items-center gap-1.5 rounded-xl bg-accent/10 px-2.5 py-1.5 font-bold text-accent"
         whileHover={{ scale: 1.05 }}
       >
-        <Trophy className="h-4 w-4" />
-        <span className="text-sm">{completedCount}</span>
+        <Trophy className="h-3.5 w-3.5" />
+        <span className="text-xs">{completedCount}</span>
       </motion.div>
     </div>
   );

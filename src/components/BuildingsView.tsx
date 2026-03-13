@@ -15,34 +15,10 @@ export interface BuildingArea {
 }
 
 export const ACADEMY_BUILDINGS: BuildingArea[] = [
-  {
-    id: "lecture-hall",
-    name: "Lecture Hall",
-    subtitle: "Foundations & Governance",
-    Icon: LectureHallIcon,
-    moduleIds: ["week-1", "week-2", "week-3"],
-  },
-  {
-    id: "guild-library",
-    name: "Guild Library",
-    subtitle: "Valuation & Decisions",
-    Icon: LibraryIcon,
-    moduleIds: ["week-4", "week-5", "week-6"],
-  },
-  {
-    id: "market-yard",
-    name: "Market Yard",
-    subtitle: "Risk & Capital",
-    Icon: MarketYardIcon,
-    moduleIds: ["week-7", "week-8", "week-9"],
-  },
-  {
-    id: "risk-observatory",
-    name: "Risk Observatory",
-    subtitle: "Policy & Strategy",
-    Icon: ObservatoryIcon,
-    moduleIds: ["week-11", "week-12", "week-13"],
-  },
+  { id: "lecture-hall", name: "Lecture Hall", subtitle: "Foundations & Governance", Icon: LectureHallIcon, moduleIds: ["week-1", "week-2", "week-3"] },
+  { id: "guild-library", name: "Guild Library", subtitle: "Valuation & Decisions", Icon: LibraryIcon, moduleIds: ["week-4", "week-5", "week-6"] },
+  { id: "market-yard", name: "Market Yard", subtitle: "Risk & Capital", Icon: MarketYardIcon, moduleIds: ["week-7", "week-8", "week-9"] },
+  { id: "risk-observatory", name: "Risk Observatory", subtitle: "Policy & Strategy", Icon: ObservatoryIcon, moduleIds: ["week-11", "week-12", "week-13"] },
 ];
 
 interface BuildingsViewProps {
@@ -63,7 +39,6 @@ function getBuildingProgress(building: BuildingArea, course: Course, progress: U
 
 function isBuildingUnlocked(buildingIndex: number, course: Course, progress: UserProgress): boolean {
   if (buildingIndex === 0) return true;
-  // Unlock next building when previous building has at least 1 lesson completed
   const prevBuilding = ACADEMY_BUILDINGS[buildingIndex - 1];
   const { completed } = getBuildingProgress(prevBuilding, course, progress);
   return completed > 0;
@@ -89,24 +64,23 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
               transition={{ delay: index * 0.1, type: "spring", damping: 20 }}
               onClick={() => unlocked && onBuildingClick(building.id)}
               disabled={!unlocked}
-              className={`group relative flex flex-col items-center gap-3 rounded-2xl border-2 p-6 text-center backdrop-blur-sm transition-all ${
+              className={`group relative flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all shadow-sm ${
                 isComplete
-                  ? "border-success/30 bg-success/5 hover:border-success/50"
+                  ? "border-success/30 bg-card shadow-success/5"
                   : unlocked
-                  ? "border-accent/20 bg-card/60 hover:border-accent/40 hover:bg-card/80 hover:shadow-lg"
-                  : "border-muted/20 bg-muted/5 cursor-not-allowed opacity-50"
+                  ? "border-border/60 bg-card hover:border-accent/40 hover:shadow-md hover:shadow-accent/5"
+                  : "border-border/30 bg-muted/30 cursor-not-allowed opacity-50"
               }`}
               whileHover={unlocked ? { scale: 1.02, y: -2 } : undefined}
               whileTap={unlocked ? { scale: 0.98 } : undefined}
             >
-              {/* Building icon */}
               <div
-                className={`flex h-16 w-16 items-center justify-center rounded-xl border ${
+                className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
                   isComplete
-                    ? "border-success/30 bg-success/10"
+                    ? "bg-success/10"
                     : unlocked
-                    ? "border-accent/20 bg-accent/10"
-                    : "border-muted/20 bg-muted/10"
+                    ? "bg-accent/10"
+                    : "bg-muted/50"
                 }`}
               >
                 {unlocked ? (
@@ -116,7 +90,6 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
                 )}
               </div>
 
-              {/* Name & subtitle */}
               <div>
                 <h3 className={`text-sm font-black ${unlocked ? "text-foreground" : "text-muted-foreground"}`}>
                   {building.name}
@@ -124,10 +97,9 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
                 <p className="text-[11px] text-muted-foreground mt-0.5">{building.subtitle}</p>
               </div>
 
-              {/* Progress bar */}
               {unlocked && (
                 <div className="w-full space-y-1">
-                  <div className="h-1.5 w-full rounded-full bg-muted/50 overflow-hidden">
+                  <div className="h-1.5 w-full rounded-full bg-muted/60 overflow-hidden">
                     <motion.div
                       className={`h-full rounded-full ${isComplete ? "bg-success" : "bg-accent"}`}
                       initial={{ width: 0 }}
@@ -141,12 +113,10 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
                 </div>
               )}
 
-              {/* Arrow */}
               {unlocked && !isComplete && (
-                <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent/30 opacity-0 group-hover:opacity-100 transition-opacity" />
               )}
 
-              {/* Complete badge */}
               {isComplete && (
                 <motion.div
                   initial={{ scale: 0 }}
