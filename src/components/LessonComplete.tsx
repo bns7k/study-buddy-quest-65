@@ -37,18 +37,50 @@ export function LessonComplete({
   const currentBadges = allBadges.filter((b) => b.condition(progress));
   const newBadges = currentBadges.slice(previousBadgeCount);
 
+  // Confetti on lesson complete
+  useEffect(() => {
+    const duration = 2000;
+    const end = Date.now() + duration;
+    const colors = ["#FFD700", "#FF6B6B", "#4ECDC4", "#A855F7", "#F97316"];
+    
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors,
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors,
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center gap-5 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center"
+      className="relative flex flex-col items-center gap-5 rounded-3xl border-2 border-primary/20 bg-card p-8 text-center overflow-hidden"
     >
+      {/* Glow effect */}
+      <div className="pointer-events-none absolute inset-0 rounded-3xl animate-pulse" style={{
+        background: "radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 70%)",
+      }} />
+
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", delay: 0.2 }}
-        className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10"
+        className="relative flex h-24 w-24 items-center justify-center rounded-full bg-primary/10"
       >
+        <div className="absolute inset-0 rounded-full animate-ping bg-primary/10" style={{ animationDuration: "2s" }} />
         <Trophy className="h-12 w-12 text-primary" />
       </motion.div>
 
