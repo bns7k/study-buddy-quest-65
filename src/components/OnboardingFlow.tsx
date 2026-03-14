@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
+import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
@@ -96,16 +97,23 @@ function SceneContainer({ children, className = "" }: { children: React.ReactNod
 }
 
 function ProfessorAvatar({ size = "lg" }: { size?: "sm" | "lg" }) {
-  const s = size === "lg" ? "h-20 w-20" : "h-14 w-14";
-  const emoji = size === "lg" ? "text-4xl" : "text-2xl";
+  const s = size === "lg" ? "h-24 w-24" : "h-16 w-16";
   return (
     <motion.div
       initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-      className={`flex ${s} items-center justify-center rounded-full bg-accent/10 border-2 border-accent/20`}
+      animate={{ 
+        scale: 1,
+        y: [0, -3, 0, -2, 0],
+        rotate: [0, -1, 0, 1, 0],
+      }}
+      transition={{ 
+        type: "spring", stiffness: 200, delay: 0.2,
+        y: { delay: 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" },
+        rotate: { delay: 0.5, duration: 5, repeat: Infinity, ease: "easeInOut" },
+      }}
+      className={`${s} rounded-2xl overflow-hidden border-2 border-accent/30 shadow-xl bg-card`}
     >
-      <span className={emoji}>🧙‍♂️</span>
+      <img src={professorImg} alt="Professor Aldric" className="h-full w-full object-cover object-top" />
     </motion.div>
   );
 }
@@ -426,8 +434,8 @@ function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }
         transition={{ delay: 0.2, type: "spring" }}
         className="flex items-end gap-3"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 border-2 border-accent/20">
-          <span className="text-3xl">🧙‍♂️</span>
+        <div className="h-16 w-16 rounded-2xl overflow-hidden border-2 border-accent/20 shadow-lg bg-card">
+          <img src={professorImg} alt="Professor Aldric" className="h-full w-full object-cover object-top" />
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 border-2 border-primary/20">
           <span className="text-2xl">{avatarEmoji}</span>
