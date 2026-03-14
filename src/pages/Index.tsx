@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, Shield, Heart, ArrowLeft } from "lucide-react";
+import { Settings, Shield, Heart, ArrowLeft, Lock } from "lucide-react";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { StatsBar } from "@/components/StatsBar";
 import { RankBadge } from "@/components/RankBadge";
@@ -164,6 +164,54 @@ const Index = () => {
                 progress={progress}
                 onBuildingClick={setSelectedBuilding}
               />
+
+              {/* Locked Paths Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-10"
+              >
+                <div className="mb-4 text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="h-px w-10 bg-accent/20" />
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                      Specialization Paths
+                    </p>
+                    <div className="h-px w-10 bg-accent/20" />
+                  </div>
+                  <p className="text-xs text-muted-foreground/70 italic max-w-sm mx-auto leading-relaxed">
+                    "Every analyst's journey leads to a crossroads — a moment to choose your path. But first, you must prove yourself at the Foundation Academy."
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    { name: "Corporate Strategy", subtitle: "M&A & Advisory", emoji: "⚔️" },
+                    { name: "Portfolio Management", subtitle: "Markets & Allocation", emoji: "🛡️" },
+                    { name: "Quantitative Analysis", subtitle: "Models & Algorithms", emoji: "📜" },
+                  ].map((path, i) => (
+                    <motion.div
+                      key={path.name}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 0.45, y: 0 }}
+                      transition={{ delay: 0.6 + i * 0.1 }}
+                      className="relative flex flex-col items-center gap-2 rounded-2xl border border-border/30 bg-card/40 p-5 text-center cursor-not-allowed select-none"
+                    >
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/40 text-2xl">
+                        {path.emoji}
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-black text-muted-foreground">{path.name}</h3>
+                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">{path.subtitle}</p>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Lock className="h-4 w-4 text-muted-foreground/40" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
           ) : (
             <motion.div
