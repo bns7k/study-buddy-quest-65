@@ -64,7 +64,8 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
               transition={{ delay: index * 0.1, type: "spring", damping: 20 }}
               onClick={() => unlocked && onBuildingClick(building.id)}
               disabled={!unlocked}
-              className={`group relative flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all shadow-sm ${
+              title={!unlocked ? "Unlock by completing previous hall" : undefined}
+              className={`group relative flex flex-col items-center gap-2.5 rounded-2xl border p-4 text-center transition-all shadow-sm sm:gap-3 sm:p-6 ${
                 isComplete
                   ? "border-success/30 bg-card shadow-success/5"
                   : unlocked
@@ -94,7 +95,10 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
                 <h3 className={`text-sm font-black ${unlocked ? "text-foreground" : "text-muted-foreground"}`}>
                   {building.name}
                 </h3>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{building.subtitle}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">{building.subtitle}</p>
+                {!unlocked && (
+                  <p className="mt-1 text-[10px] font-bold text-accent/80">Unlock by completing previous hall</p>
+                )}
               </div>
 
               {unlocked && (
