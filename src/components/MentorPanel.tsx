@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BookOpen } from "lucide-react";
+import professorImg from "@/assets/professor-aldric.png";
 
 interface MentorPanelProps {
   message: string;
