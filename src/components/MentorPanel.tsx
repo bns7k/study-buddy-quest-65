@@ -83,7 +83,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             onClick={() => setMinimized(false)}
-            className="fixed bottom-20 left-4 z-40 flex items-center gap-2 rounded-xl border border-accent/25 bg-card/95 px-3 py-2 shadow-lg backdrop-blur-sm"
+            className="fixed bottom-20 left-3 z-40 flex items-center gap-2 rounded-xl border border-accent/25 bg-card/95 px-3 py-2 shadow-lg backdrop-blur-sm sm:left-6"
             aria-label="Expand mentor panel"
           >
             <img src={professorImg} alt="Professor Aldric" className="h-8 w-8 rounded-lg object-cover object-top" />
@@ -96,7 +96,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: -40, y: 20 }}
             transition={{ type: "spring", damping: 18, stiffness: 200 }}
-            className="fixed bottom-20 left-1/2 z-40 flex w-[min(96vw,740px)] -translate-x-1/2 items-end justify-start gap-0 px-1 sm:px-0"
+            className="fixed bottom-20 left-3 z-40 flex items-end gap-0 sm:left-6"
           >
             {/* Professor image */}
             <motion.div
@@ -138,7 +138,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
               initial={{ opacity: 0, scale: 0.9, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ delay: 0.2, type: "spring", damping: 20 }}
-              className="relative ml-1 min-w-0 flex-1 max-w-[520px] sm:max-w-[560px]"
+              className="relative ml-1 max-w-[min(72vw,380px)] sm:max-w-sm"
             >
               {/* Bubble tail */}
               <div className="absolute bottom-4 left-0 -ml-2 hidden h-4 w-4 rotate-45 border-b border-l border-border/60 bg-card sm:block" />
