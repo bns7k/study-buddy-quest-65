@@ -17,7 +17,7 @@ export function MapAvatar({ gender, rankLevel }: MapAvatarProps) {
     >
       <div className="relative">
         {image ? (
-          <img src={image} alt={`${label} avatar`} className="block h-12 w-12 object-contain drop-shadow-md" />
+          <img src={image} alt={`${label} avatar`} className="block h-14 w-14 object-cover drop-shadow-md" />
         ) : (
           <span className="text-2xl block drop-shadow-md">{emoji}</span>
         )}
