@@ -43,8 +43,8 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       manifest: {
-        name: "FinLearn - Finance Exam Prep",
-        short_name: "FinLearn",
+        name: "Capital Guild - Finance Academy",
+        short_name: "Capital Guild",
         description: "Master corporate finance and derivatives with interactive lessons, spaced repetition, and mock exams",
         theme_color: "#0f172a",
         background_color: "#0f172a",

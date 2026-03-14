@@ -3,32 +3,25 @@ import { SVGProps } from "react";
 export function GuildCrest(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      {/* Shield shape */}
+      <circle cx="16" cy="16" r="13" fill="currentColor" opacity={0.12} />
+      <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="1.6" opacity={0.7} />
+      <path d="M16 6.5L22.8 10.4V18.2L16 22.1L9.2 18.2V10.4L16 6.5Z" stroke="currentColor" strokeWidth="1.2" opacity={0.5} />
+
+      {/* Capital Guild monogram */}
       <path
-        d="M16 2L4 7v9c0 7.5 5.1 14.5 12 16 6.9-1.5 12-8.5 12-16V7L16 2z"
-        fill="currentColor"
-        opacity={0.15}
-      />
-      <path
-        d="M16 2L4 7v9c0 7.5 5.1 14.5 12 16 6.9-1.5 12-8.5 12-16V7L16 2z"
+        d="M13.9 20.8C11.7 20.8 10 19.1 10 16.9C10 14.7 11.7 13 13.9 13C15 13 15.9 13.4 16.6 14.1"
         stroke="currentColor"
-        strokeWidth={1.5}
-        fill="none"
-        opacity={0.6}
+        strokeWidth="1.9"
+        strokeLinecap="round"
       />
-      {/* Inner diamond */}
       <path
-        d="M16 8l5 6-5 6-5-6 5-6z"
+        d="M17 13H20.7C21.9 13 22.9 14 22.9 15.2V16.9C22.9 19.1 21.1 20.8 18.9 20.8H17V17.2H20"
         stroke="currentColor"
-        strokeWidth={1}
-        fill="currentColor"
-        opacity={0.25}
+        strokeWidth="1.9"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      {/* Top star */}
-      <circle cx={16} cy={11} r={1.5} fill="currentColor" opacity={0.8} />
-      {/* Quill lines */}
-      <line x1={11} y1={18} x2={16} y2={22} stroke="currentColor" strokeWidth={1} opacity={0.4} />
-      <line x1={21} y1={18} x2={16} y2={22} stroke="currentColor" strokeWidth={1} opacity={0.4} />
+      <circle cx="16" cy="8.8" r="1.2" fill="currentColor" opacity={0.9} />
     </svg>
   );
 }
