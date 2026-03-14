@@ -5,6 +5,8 @@ import { GuildCrest } from "@/components/icons/GuildCrest";
 import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
+import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
+import femaleAvatarImg from "@/assets/female-analyst-transparent.svg";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
@@ -105,54 +107,55 @@ function VNLayout({
       className="relative flex h-full w-full flex-col"
     >
       {/* Background world content */}
-      <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+      <div className="relative flex flex-1 items-start justify-center overflow-hidden pt-20 sm:items-center sm:pt-0">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-transparent" />
         {backgroundContent}
         {children}
       </div>
 
       {/* Bottom section: Professor + dialogue */}
-      <div className="relative z-10 flex items-end gap-0 p-4 sm:p-6 pb-6 sm:pb-8">
-        {/* Professor portrait */}
-        {showProfessor && (
-          <motion.div
-            initial={{ x: -80, opacity: 0 }}
-            animate={{ 
-              x: 0, 
-              opacity: 1,
-              y: [0, -4, 0, -2, 0],
-            }}
-            transition={{ 
-              type: "spring", damping: 18, stiffness: 150,
-              y: { delay: 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" },
-            }}
-            className="relative shrink-0 -mr-3 z-10"
-          >
-            <div className="h-40 w-40 sm:h-52 sm:w-52 rounded-2xl overflow-hidden border-2 border-accent/30 shadow-2xl bg-card">
-              <img
-                src={professorImg}
-                alt="Professor Aldric"
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
-            {/* Glow */}
-            <div className="absolute inset-0 rounded-2xl shadow-[0_0_40px_hsl(var(--accent)/0.15)] pointer-events-none" />
-          </motion.div>
-        )}
+      <div className="relative z-10 px-3 pb-6 sm:px-6 sm:pb-8">
+        <div className="mx-auto flex w-full max-w-4xl items-end gap-2 sm:gap-4">
+          {/* Professor portrait */}
+          {showProfessor && (
+            <motion.div
+              initial={{ x: -80, opacity: 0 }}
+              animate={{
+                x: 0,
+                opacity: 1,
+                y: [0, -4, 0, -2, 0],
+              }}
+              transition={{
+                type: "spring", damping: 18, stiffness: 150,
+                y: { delay: 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" },
+              }}
+              className="relative z-10 hidden shrink-0 sm:block sm:-mr-2"
+            >
+              <div className="h-36 w-36 overflow-hidden rounded-2xl border-2 border-accent/30 bg-card shadow-2xl sm:h-48 sm:w-48">
+                <img
+                  src={professorImg}
+                  alt="Professor Aldric"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              {/* Glow */}
+              <div className="pointer-events-none absolute inset-0 rounded-2xl shadow-[0_0_40px_hsl(var(--accent)/0.15)]" />
+            </motion.div>
+          )}
 
-        {/* Dialogue area */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, type: "spring", damping: 20 }}
-          className="relative flex-1 min-w-0"
-        >
+          {/* Dialogue area */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, type: "spring", damping: 20 }}
+            className="relative mx-auto w-full max-w-3xl min-w-0"
+          >
           {/* Bubble tail */}
           {showProfessor && (
-            <div className="absolute left-0 bottom-6 -ml-2 h-4 w-4 rotate-45 border-l border-b border-border/40 bg-card/95" />
+            <div className="absolute bottom-6 left-0 -ml-2 hidden h-4 w-4 rotate-45 border-b border-l border-border/40 bg-card/95 sm:block" />
           )}
           
-          <div className="rounded-2xl border border-border/40 bg-card/95 p-4 sm:p-5 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl border border-border/40 bg-card/95 p-4 shadow-xl backdrop-blur-md sm:p-5">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/[0.03] to-transparent pointer-events-none" />
             
             {showProfessor && (
@@ -169,22 +172,23 @@ function VNLayout({
           </div>
 
           {/* Continue button */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: continueDelay }}
-            className="flex justify-end mt-3"
-          >
-            <motion.button
-              onClick={onContinue}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="rounded-xl bg-accent px-6 py-2.5 text-sm font-black text-accent-foreground shadow-lg"
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: continueDelay }}
+              className="sticky bottom-3 z-20 mt-3 flex justify-center sm:static sm:z-auto sm:justify-end"
             >
-              {continueLabel}
-            </motion.button>
+              <motion.button
+                onClick={onContinue}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full rounded-xl bg-accent px-6 py-2.5 text-sm font-black text-accent-foreground shadow-lg sm:w-auto"
+              >
+                {continueLabel}
+              </motion.button>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </motion.div>
   );
@@ -279,7 +283,7 @@ function Scene2({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 5.5, duration: 1 }}
-          className="absolute top-[15%] left-1/2 -translate-x-1/2 grid grid-cols-2 gap-4 sm:gap-6 w-[320px] sm:w-[400px]"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 grid w-[min(90vw,360px)] grid-cols-2 gap-3 sm:top-[15%] sm:w-[400px] sm:gap-6"
         >
           {buildings.map((b, i) => (
             <motion.div
@@ -323,7 +327,7 @@ function Scene3({ onNext }: { onNext: () => void }) {
         { text: "They are… competent. Occasionally.", delay: 10 },
       ]}
       backgroundContent={
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 flex flex-col gap-6 w-[340px] sm:w-[440px]">
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 flex w-[min(92vw,380px)] flex-col gap-5 sm:top-[10%] sm:w-[440px] sm:gap-6">
           {/* Client companies */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -393,14 +397,14 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 4 }}
-          className="absolute top-[15%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-5 sm:top-[15%] sm:gap-6"
         >
           <div className="text-center">
             <h2 className="text-lg font-black text-foreground">Choose your analyst</h2>
             <p className="text-xs text-muted-foreground mt-1">Your outfit evolves as you rank up</p>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
             {(["male", "female"] as const).map((g, i) => (
               <motion.button
                 key={g}
@@ -410,9 +414,13 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
                 whileHover={{ scale: 1.08, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onSelect(g)}
-                className="group flex flex-col items-center gap-3 rounded-2xl border-2 border-accent/15 bg-card/80 px-8 py-6 backdrop-blur-sm transition-colors hover:border-accent/40 hover:bg-accent/5"
+                className="group flex min-w-[190px] flex-col items-center gap-3 rounded-2xl border-2 border-accent/15 bg-card/80 px-5 py-5 sm:px-8 sm:py-6 backdrop-blur-sm transition-colors hover:border-accent/40 hover:bg-accent/5"
               >
-                <span className="text-5xl">{g === "male" ? "🧑‍💼" : "👩‍💼"}</span>
+                {g === "male" ? (
+                  <img src={maleAvatarImg} alt="Male analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
+                ) : (
+                  <img src={femaleAvatarImg} alt="Female analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
+                )}
                 <span className="text-xs font-bold text-muted-foreground group-hover:text-accent transition-colors">
                   {g === "male" ? "Male Analyst" : "Female Analyst"}
                 </span>
@@ -429,6 +437,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
 
 function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
@@ -440,7 +449,7 @@ function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }
         { text: "And, most importantly… how to recognize a terrible investment.", delay: 9 },
       ]}
       backgroundContent={
-        <div className="absolute top-[15%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-5">
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 sm:top-[15%] sm:gap-5">
           {/* Player avatar + professor side by side */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -448,8 +457,12 @@ function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }
             transition={{ delay: 0.3, type: "spring" }}
             className="flex items-end gap-4"
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 border-2 border-primary/20">
-              <span className="text-2xl">{avatarEmoji}</span>
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10">
+              {avatarImage ? (
+                <img src={avatarImage} alt="Selected analyst" className="h-14 w-14 object-cover" />
+              ) : (
+                <span className="text-2xl">{avatarEmoji}</span>
+              )}
             </div>
           </motion.div>
 
@@ -496,7 +509,7 @@ function Scene6({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
-          className="absolute top-[12%] left-1/2 -translate-x-1/2 grid grid-cols-2 gap-4 w-[300px] sm:w-[380px]"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 grid w-[min(90vw,340px)] grid-cols-2 gap-3 sm:top-[12%] sm:w-[380px] sm:gap-4"
         >
           {futurePaths.map((p, i) => (
             <motion.div
@@ -521,6 +534,7 @@ function Scene6({ onNext }: { onNext: () => void }) {
 
 function Scene7({ gender, onFinish }: { gender: AvatarGender; onFinish: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
@@ -537,13 +551,17 @@ function Scene7({ gender, onFinish }: { gender: AvatarGender; onFinish: () => vo
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 2 }}
-          className="absolute top-[18%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 sm:top-[18%]"
         >
           <motion.div
             animate={{ y: [-3, 0, -3] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           >
-            <span className="text-2xl">{avatarEmoji}</span>
+            {avatarImage ? (
+              <img src={avatarImage} alt="Selected analyst" className="h-14 w-14 object-cover" />
+            ) : (
+              <span className="text-2xl">{avatarEmoji}</span>
+            )}
           </motion.div>
 
           <motion.div
