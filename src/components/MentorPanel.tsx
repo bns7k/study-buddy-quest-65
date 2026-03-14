@@ -74,7 +74,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
           animate={{ opacity: 1, x: 0, y: 0 }}
           exit={{ opacity: 0, x: -40, y: 20 }}
           transition={{ type: "spring", damping: 18, stiffness: 200 }}
-          className="fixed bottom-20 left-3 z-40 flex items-end gap-0 sm:left-6"
+          className="fixed bottom-20 left-1/2 z-40 flex w-[min(96vw,740px)] -translate-x-1/2 items-end justify-start gap-0 px-1 sm:px-0"
         >
           {/* Professor image */}
           <motion.div
@@ -94,7 +94,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
             }}
             className="relative z-10 -mr-2 shrink-0"
           >
-            <div className="h-36 w-36 sm:h-44 sm:w-44 rounded-2xl overflow-hidden border-2 border-accent/30 shadow-xl bg-card">
+            <div className="h-28 w-28 rounded-2xl overflow-hidden border-2 border-accent/30 bg-card shadow-xl sm:h-36 sm:w-36 md:h-44 md:w-44">
               <img
                 src={professorImg}
                 alt="Professor Aldric"
@@ -115,10 +115,10 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
             initial={{ opacity: 0, scale: 0.9, x: -10 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ delay: 0.2, type: "spring", damping: 20 }}
-            className="relative ml-1 max-w-xs sm:max-w-sm"
+            className="relative ml-1 min-w-0 flex-1 max-w-[520px] sm:max-w-[560px]"
           >
             {/* Bubble tail */}
-            <div className="absolute left-0 bottom-4 -ml-2 h-4 w-4 rotate-45 border-l border-b border-border/60 bg-card" />
+            <div className="absolute bottom-4 left-0 -ml-2 hidden h-4 w-4 rotate-45 border-b border-l border-border/60 bg-card sm:block" />
             
             <div className="relative rounded-2xl border border-border/60 bg-card p-4 shadow-lg">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/[0.04] to-transparent pointer-events-none" />

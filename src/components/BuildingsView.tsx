@@ -64,7 +64,7 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
               transition={{ delay: index * 0.1, type: "spring", damping: 20 }}
               onClick={() => unlocked && onBuildingClick(building.id)}
               disabled={!unlocked}
-              className={`group relative flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all shadow-sm ${
+              className={`group relative flex flex-col items-center gap-2.5 rounded-2xl border p-4 text-center transition-all shadow-sm sm:gap-3 sm:p-6 ${
                 isComplete
                   ? "border-success/30 bg-card shadow-success/5"
                   : unlocked

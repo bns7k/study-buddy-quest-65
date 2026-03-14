@@ -5,6 +5,8 @@ import { GuildCrest } from "@/components/icons/GuildCrest";
 import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
+import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
+import femaleAvatarImg from "@/assets/female-analyst-transparent.svg";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
@@ -174,13 +176,13 @@ function VNLayout({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: continueDelay }}
-              className="mt-3 flex justify-end"
+              className="sticky bottom-3 z-20 mt-3 flex justify-center sm:static sm:z-auto sm:justify-end"
             >
               <motion.button
                 onClick={onContinue}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="rounded-xl bg-accent px-6 py-2.5 text-sm font-black text-accent-foreground shadow-lg"
+                className="w-full rounded-xl bg-accent px-6 py-2.5 text-sm font-black text-accent-foreground shadow-lg sm:w-auto"
               >
                 {continueLabel}
               </motion.button>
@@ -325,7 +327,7 @@ function Scene3({ onNext }: { onNext: () => void }) {
         { text: "They are… competent. Occasionally.", delay: 10 },
       ]}
       backgroundContent={
-        <div className="absolute top-[18%] left-1/2 -translate-x-1/2 flex w-[min(92vw,380px)] flex-col gap-5 sm:top-[10%] sm:w-[440px] sm:gap-6">
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 flex w-[min(92vw,380px)] flex-col gap-5 sm:top-[10%] sm:w-[440px] sm:gap-6">
           {/* Client companies */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -402,7 +404,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
             <p className="text-xs text-muted-foreground mt-1">Your outfit evolves as you rank up</p>
           </div>
 
-          <div className="flex gap-3 sm:gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
             {(["male", "female"] as const).map((g, i) => (
               <motion.button
                 key={g}
@@ -414,7 +416,11 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
                 onClick={() => onSelect(g)}
                 className="group flex flex-col items-center gap-3 rounded-2xl border-2 border-accent/15 bg-card/80 px-5 py-5 sm:px-8 sm:py-6 backdrop-blur-sm transition-colors hover:border-accent/40 hover:bg-accent/5"
               >
-                <span className="text-5xl">{g === "male" ? "🧑‍💼" : "👩‍💼"}</span>
+                {g === "male" ? (
+                  <img src={maleAvatarImg} alt="Male analyst" className="h-20 w-20 object-contain" />
+                ) : (
+                  <img src={femaleAvatarImg} alt="Female analyst" className="h-20 w-20 object-contain" />
+                )}
                 <span className="text-xs font-bold text-muted-foreground group-hover:text-accent transition-colors">
                   {g === "male" ? "Male Analyst" : "Female Analyst"}
                 </span>
@@ -431,6 +437,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
 
 function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
@@ -450,8 +457,12 @@ function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }
             transition={{ delay: 0.3, type: "spring" }}
             className="flex items-end gap-4"
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 border-2 border-primary/20">
-              <span className="text-2xl">{avatarEmoji}</span>
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/10">
+              {avatarImage ? (
+                <img src={avatarImage} alt="Selected analyst" className="h-12 w-12 object-contain" />
+              ) : (
+                <span className="text-2xl">{avatarEmoji}</span>
+              )}
             </div>
           </motion.div>
 
@@ -498,7 +509,7 @@ function Scene6({ onNext }: { onNext: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
-          className="absolute top-[18%] left-1/2 -translate-x-1/2 grid w-[min(90vw,340px)] grid-cols-2 gap-3 sm:top-[12%] sm:w-[380px] sm:gap-4"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 grid w-[min(90vw,340px)] grid-cols-2 gap-3 sm:top-[12%] sm:w-[380px] sm:gap-4"
         >
           {futurePaths.map((p, i) => (
             <motion.div
@@ -523,6 +534,7 @@ function Scene6({ onNext }: { onNext: () => void }) {
 
 function Scene7({ gender, onFinish }: { gender: AvatarGender; onFinish: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
@@ -539,13 +551,17 @@ function Scene7({ gender, onFinish }: { gender: AvatarGender; onFinish: () => vo
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 2 }}
-          className="absolute top-[18%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 sm:top-[18%]"
         >
           <motion.div
             animate={{ y: [-3, 0, -3] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
           >
-            <span className="text-2xl">{avatarEmoji}</span>
+            {avatarImage ? (
+              <img src={avatarImage} alt="Selected analyst" className="h-11 w-11 object-contain" />
+            ) : (
+              <span className="text-2xl">{avatarEmoji}</span>
+            )}
           </motion.div>
 
           <motion.div
