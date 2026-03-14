@@ -97,16 +97,23 @@ function SceneContainer({ children, className = "" }: { children: React.ReactNod
 }
 
 function ProfessorAvatar({ size = "lg" }: { size?: "sm" | "lg" }) {
-  const s = size === "lg" ? "h-20 w-20" : "h-14 w-14";
-  const emoji = size === "lg" ? "text-4xl" : "text-2xl";
+  const s = size === "lg" ? "h-24 w-24" : "h-16 w-16";
   return (
     <motion.div
       initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-      className={`flex ${s} items-center justify-center rounded-full bg-accent/10 border-2 border-accent/20`}
+      animate={{ 
+        scale: 1,
+        y: [0, -3, 0, -2, 0],
+        rotate: [0, -1, 0, 1, 0],
+      }}
+      transition={{ 
+        type: "spring", stiffness: 200, delay: 0.2,
+        y: { delay: 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" },
+        rotate: { delay: 0.5, duration: 5, repeat: Infinity, ease: "easeInOut" },
+      }}
+      className={`${s} rounded-2xl overflow-hidden border-2 border-accent/30 shadow-xl bg-card`}
     >
-      <span className={emoji}>🧙‍♂️</span>
+      <img src={professorImg} alt="Professor Aldric" className="h-full w-full object-cover object-top" />
     </motion.div>
   );
 }
