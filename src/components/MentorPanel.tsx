@@ -79,11 +79,22 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
           {/* Professor image */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, type: "spring", damping: 15 }}
+            animate={{ 
+              scale: 1, 
+              opacity: 1,
+              y: [0, -4, 0, -2, 0],
+              rotate: [0, -1, 0, 1, 0],
+            }}
+            transition={{ 
+              delay: 0.1, 
+              type: "spring", 
+              damping: 15,
+              y: { delay: 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" },
+              rotate: { delay: 0.5, duration: 5, repeat: Infinity, ease: "easeInOut" },
+            }}
             className="relative z-10 -mr-2 shrink-0"
           >
-            <div className="h-28 w-28 sm:h-36 sm:w-36 rounded-2xl overflow-hidden border-2 border-accent/30 shadow-xl bg-card">
+            <div className="h-36 w-36 sm:h-44 sm:w-44 rounded-2xl overflow-hidden border-2 border-accent/30 shadow-xl bg-card">
               <img
                 src={professorImg}
                 alt="Professor Aldric"
@@ -97,8 +108,7 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
                 animate={{ scale: [1, 1.3, 1], opacity: [1, 0.6, 1] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
               />
-            )}
-          </motion.div>
+            )}</motion.div>
 
           {/* Speech bubble */}
           <motion.div
