@@ -434,8 +434,8 @@ function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }
         transition={{ delay: 0.2, type: "spring" }}
         className="flex items-end gap-3"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/10 border-2 border-accent/20">
-          <span className="text-3xl">🧙‍♂️</span>
+        <div className="h-16 w-16 rounded-2xl overflow-hidden border-2 border-accent/20 shadow-lg bg-card">
+          <img src={professorImg} alt="Professor Aldric" className="h-full w-full object-cover object-top" />
         </div>
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 border-2 border-primary/20">
           <span className="text-2xl">{avatarEmoji}</span>
