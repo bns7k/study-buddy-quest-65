@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, Shield, Heart, ArrowLeft } from "lucide-react";
+import { Settings, Shield, Heart, ArrowLeft, Lock } from "lucide-react";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { StatsBar } from "@/components/StatsBar";
 import { RankBadge } from "@/components/RankBadge";
