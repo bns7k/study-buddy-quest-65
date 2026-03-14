@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { BookOpen } from "lucide-react";
+import professorImg from "@/assets/professor-aldric.png";
 
 interface MentorPanelProps {
   message: string;
@@ -31,8 +31,8 @@ export function MentorPanel({ message, show }: MentorPanelProps) {
           <div className="relative flex items-end gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-lg overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-accent/[0.03] to-transparent pointer-events-none" />
             
-            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/10">
-              <span className="text-2xl">🧙‍♂️</span>
+            <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden border border-accent/20 bg-accent/5">
+              <img src={professorImg} alt="Professor Aldric" className="h-full w-full object-cover object-top" />
             </div>
             <div className="relative flex-1 min-w-0">
               <div className="flex items-center gap-1.5 mb-0.5">
