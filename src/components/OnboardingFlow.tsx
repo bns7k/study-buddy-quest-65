@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import { AvatarGender } from "@/lib/avatars";
 import { GuildCrest } from "@/components/icons/GuildCrest";
+import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
