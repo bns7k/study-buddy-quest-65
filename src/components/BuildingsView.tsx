@@ -3,22 +3,24 @@ import { Lock, ChevronRight } from "lucide-react";
 import { Course, Module } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
-import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
-import { ComponentType, SVGProps } from "react";
+import lectureHallImg from "@/assets/building-lecture-hall.png";
+import guildLibraryImg from "@/assets/building-guild-library.png";
+import marketYardImg from "@/assets/building-market-yard.png";
+import riskObservatoryImg from "@/assets/building-risk-observatory.png";
 
 export interface BuildingArea {
   id: string;
   name: string;
   subtitle: string;
-  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  image: string;
   moduleIds: string[];
 }
 
 export const ACADEMY_BUILDINGS: BuildingArea[] = [
-  { id: "lecture-hall", name: "Lecture Hall", subtitle: "Foundations & Governance", Icon: LectureHallIcon, moduleIds: ["week-1", "week-2", "week-3"] },
-  { id: "guild-library", name: "Guild Library", subtitle: "Valuation & Decisions", Icon: LibraryIcon, moduleIds: ["week-4", "week-5", "week-6"] },
-  { id: "market-yard", name: "Market Yard", subtitle: "Risk & Capital", Icon: MarketYardIcon, moduleIds: ["week-7", "week-8", "week-9"] },
-  { id: "risk-observatory", name: "Risk Observatory", subtitle: "Policy & Strategy", Icon: ObservatoryIcon, moduleIds: ["week-11", "week-12", "week-13"] },
+  { id: "lecture-hall", name: "Lecture Hall", subtitle: "Foundations & Governance", image: lectureHallImg, moduleIds: ["week-1", "week-2", "week-3"] },
+  { id: "guild-library", name: "Guild Library", subtitle: "Valuation & Decisions", image: guildLibraryImg, moduleIds: ["week-4", "week-5", "week-6"] },
+  { id: "market-yard", name: "Market Yard", subtitle: "Risk & Capital", image: marketYardImg, moduleIds: ["week-7", "week-8", "week-9"] },
+  { id: "risk-observatory", name: "Risk Observatory", subtitle: "Policy & Strategy", image: riskObservatoryImg, moduleIds: ["week-11", "week-12", "week-13"] },
 ];
 
 interface BuildingsViewProps {
@@ -54,8 +56,6 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
           const unlocked = isBuildingUnlocked(index, course, progress);
           const isComplete = completed === totalLessons && totalLessons > 0;
           const progressPct = totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
-          const BuildingIcon = building.Icon;
-
           return (
             <motion.button
               key={building.id}
@@ -75,17 +75,13 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
               whileHover={unlocked ? { scale: 1.02, y: -2 } : undefined}
               whileTap={unlocked ? { scale: 0.98 } : undefined}
             >
-              <div
-                className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
-                  isComplete
-                    ? "bg-success/10"
-                    : unlocked
-                    ? "bg-accent/10"
-                    : "bg-muted/50"
-                }`}
-              >
+              <div className="flex h-20 w-20 items-center justify-center">
                 {unlocked ? (
-                  <BuildingIcon className={`h-10 w-10 ${isComplete ? "text-success" : "text-accent"}`} />
+                  <img
+                    src={building.image}
+                    alt={building.name}
+                    className={`h-20 w-20 object-contain ${!unlocked ? "grayscale opacity-50" : ""}`}
+                  />
                 ) : (
                   <Lock className="h-6 w-6 text-muted-foreground" />
                 )}
