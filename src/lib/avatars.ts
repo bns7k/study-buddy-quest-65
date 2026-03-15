@@ -1,5 +1,4 @@
-import maleAvatarImg from "@/assets/male-analyst-character.png";
-import femaleAvatarImg from "@/assets/female-analyst-character.png";
+import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
 
 export type AvatarGender = "male" | "female";
 
@@ -28,6 +27,6 @@ export function getAvatarForRank(gender: AvatarGender, rankLevel: number): { emo
   return {
     emoji: gender === "male" ? outfit.male : outfit.female,
     label: outfit.label,
-    image: gender === "male" ? maleAvatarImg : femaleAvatarImg,
+    image: maleAvatarImg,
   };
 }
