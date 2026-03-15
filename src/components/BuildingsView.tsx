@@ -17,10 +17,10 @@ export interface BuildingArea {
 }
 
 export const ACADEMY_BUILDINGS: BuildingArea[] = [
-  { id: "lecture-hall", name: "Lecture Hall", subtitle: "Foundations & Governance", Icon: LectureHallIcon, moduleIds: ["week-1", "week-2", "week-3"] },
-  { id: "guild-library", name: "Guild Library", subtitle: "Valuation & Decisions", Icon: LibraryIcon, moduleIds: ["week-4", "week-5", "week-6"] },
-  { id: "market-yard", name: "Market Yard", subtitle: "Risk & Capital", Icon: MarketYardIcon, moduleIds: ["week-7", "week-8", "week-9"] },
-  { id: "risk-observatory", name: "Risk Observatory", subtitle: "Policy & Strategy", Icon: ObservatoryIcon, moduleIds: ["week-11", "week-12", "week-13"] },
+  { id: "lecture-hall", name: "Lecture Hall", subtitle: "Foundations & Governance", image: lectureHallImg, moduleIds: ["week-1", "week-2", "week-3"] },
+  { id: "guild-library", name: "Guild Library", subtitle: "Valuation & Decisions", image: guildLibraryImg, moduleIds: ["week-4", "week-5", "week-6"] },
+  { id: "market-yard", name: "Market Yard", subtitle: "Risk & Capital", image: marketYardImg, moduleIds: ["week-7", "week-8", "week-9"] },
+  { id: "risk-observatory", name: "Risk Observatory", subtitle: "Policy & Strategy", image: riskObservatoryImg, moduleIds: ["week-11", "week-12", "week-13"] },
 ];
 
 interface BuildingsViewProps {
