@@ -417,9 +417,9 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
                 className="group flex min-w-[190px] flex-col items-center gap-3 rounded-2xl border-2 border-accent/15 bg-card/80 px-5 py-5 sm:px-8 sm:py-6 backdrop-blur-sm transition-colors hover:border-accent/40 hover:bg-accent/5"
               >
                 {g === "male" ? (
-                  <img src={maleAvatarImg} alt="Male analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
+                  <img src={maleAvatarImg} alt="Male analyst" className="h-28 w-28 object-contain drop-shadow-sm sm:h-32 sm:w-32" />
                 ) : (
-                  <img src={femaleAvatarImg} alt="Female analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
+                  <img src={femaleAvatarImg} alt="Female analyst" className="h-28 w-28 object-contain drop-shadow-sm sm:h-32 sm:w-32" />
                 )}
                 <span className="text-xs font-bold text-muted-foreground group-hover:text-accent transition-colors">
                   {g === "male" ? "Male Analyst" : "Female Analyst"}
