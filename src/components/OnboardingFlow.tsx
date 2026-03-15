@@ -5,7 +5,8 @@ import { GuildCrest } from "@/components/icons/GuildCrest";
 import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
-import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
+import maleAvatarImg from "@/assets/male-analyst-character.png";
+import femaleAvatarImg from "@/assets/female-analyst-character.png";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
@@ -234,26 +235,27 @@ function TypewriterText({ text, delay = 0, speed = 25, voice = true }: { text: s
 
 
 function BuildingPreview({
-  imageSrc,
+  imageCandidates,
   name,
   Icon,
 }: {
-  imageSrc: string;
+  imageCandidates: string[];
   name: string;
   Icon: React.ComponentType<{ className?: string }>;
 }) {
-  const [imageFailed, setImageFailed] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+  const activeSrc = imageCandidates[imageIndex];
 
-  if (imageFailed) {
+  if (!activeSrc) {
     return <Icon className="h-10 w-10 sm:h-12 sm:w-12 text-accent" />;
   }
 
   return (
     <img
-      src={imageSrc}
+      src={activeSrc}
       alt={name}
-      className="h-14 w-14 rounded-xl object-cover sm:h-16 sm:w-16"
-      onError={() => setImageFailed(true)}
+      className="h-16 w-16 rounded-xl object-cover sm:h-20 sm:w-20"
+      onError={() => setImageIndex((idx) => idx + 1)}
       loading="lazy"
     />
   );
@@ -289,10 +291,10 @@ function Scene1({ onNext }: { onNext: () => void }) {
 
 function Scene2({ onNext }: { onNext: () => void }) {
   const buildings = [
-    { Icon: LectureHallIcon, name: "Lecture Hall", imageSrc: "/building-lecture-hall.png" },
-    { Icon: LibraryIcon, name: "Guild Library", imageSrc: "/building-guild-library.png" },
-    { Icon: MarketYardIcon, name: "Market Yard", imageSrc: "/building-market-yard.png" },
-    { Icon: ObservatoryIcon, name: "Risk Observatory", imageSrc: "/building-risk-observatory.png" },
+    { Icon: LectureHallIcon, name: "Lecture Hall", imageCandidates: ["/building-lecture-hall.png", "/assets/building-lecture-hall.png", "/src/assets/building-lecture-hall.png"] },
+    { Icon: LibraryIcon, name: "Guild Library", imageCandidates: ["/building-guild-library.png", "/assets/building-guild-library.png", "/src/assets/building-guild-library.png"] },
+    { Icon: MarketYardIcon, name: "Market Yard", imageCandidates: ["/building-market-yard.png", "/assets/building-market-yard.png", "/src/assets/building-market-yard.png"] },
+    { Icon: ObservatoryIcon, name: "Risk Observatory", imageCandidates: ["/building-risk-observatory.png", "/assets/building-risk-observatory.png", "/src/assets/building-risk-observatory.png"] },
   ];
 
   return (
@@ -319,7 +321,7 @@ function Scene2({ onNext }: { onNext: () => void }) {
               transition={{ delay: 6 + i * 0.25, type: "spring", damping: 12 }}
               className="flex flex-col items-center gap-2 rounded-2xl border border-accent/15 bg-card/70 p-4 backdrop-blur-sm shadow-lg"
             >
-              <BuildingPreview imageSrc={b.imageSrc} name={b.name} Icon={b.Icon} />
+              <BuildingPreview imageCandidates={b.imageCandidates} name={b.name} Icon={b.Icon} />
               <span className="text-[10px] sm:text-xs font-black text-foreground text-center">{b.name}</span>
             </motion.div>
           ))}
@@ -445,7 +447,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
                 {g === "male" ? (
                   <img src={maleAvatarImg} alt="Male analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
                 ) : (
-                  <img src={maleAvatarImg} alt="Female analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
+                  <img src={femaleAvatarImg} alt="Female analyst" className="h-28 w-28 object-cover drop-shadow-sm sm:h-32 sm:w-32" />
                 )}
                 <span className="text-xs font-bold text-muted-foreground group-hover:text-accent transition-colors">
                   {g === "male" ? "Male Analyst" : "Female Analyst"}
@@ -463,7 +465,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
 
 function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
-  const avatarImage = maleAvatarImg;
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
@@ -560,7 +562,7 @@ function Scene6({ onNext }: { onNext: () => void }) {
 
 function Scene7({ gender, onFinish }: { gender: AvatarGender; onFinish: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
-  const avatarImage = maleAvatarImg;
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
