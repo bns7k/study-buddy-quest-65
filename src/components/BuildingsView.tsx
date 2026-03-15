@@ -3,14 +3,16 @@ import { Lock, ChevronRight } from "lucide-react";
 import { Course, Module } from "@/types/course";
 import { UserProgress } from "@/types/course";
 import { MapBackground } from "@/components/MapBackground";
-import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
-import { ComponentType, SVGProps } from "react";
+import lectureHallImg from "@/assets/building-lecture-hall.png";
+import guildLibraryImg from "@/assets/building-guild-library.png";
+import marketYardImg from "@/assets/building-market-yard.png";
+import riskObservatoryImg from "@/assets/building-risk-observatory.png";
 
 export interface BuildingArea {
   id: string;
   name: string;
   subtitle: string;
-  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  image: string;
   moduleIds: string[];
 }
 
