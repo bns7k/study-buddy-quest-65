@@ -56,8 +56,6 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
           const unlocked = isBuildingUnlocked(index, course, progress);
           const isComplete = completed === totalLessons && totalLessons > 0;
           const progressPct = totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
-          const BuildingIcon = building.Icon;
-
           return (
             <motion.button
               key={building.id}
@@ -77,17 +75,13 @@ export function BuildingsView({ course, progress, onBuildingClick }: BuildingsVi
               whileHover={unlocked ? { scale: 1.02, y: -2 } : undefined}
               whileTap={unlocked ? { scale: 0.98 } : undefined}
             >
-              <div
-                className={`flex h-16 w-16 items-center justify-center rounded-2xl ${
-                  isComplete
-                    ? "bg-success/10"
-                    : unlocked
-                    ? "bg-accent/10"
-                    : "bg-muted/50"
-                }`}
-              >
+              <div className="flex h-20 w-20 items-center justify-center">
                 {unlocked ? (
-                  <BuildingIcon className={`h-10 w-10 ${isComplete ? "text-success" : "text-accent"}`} />
+                  <img
+                    src={building.image}
+                    alt={building.name}
+                    className={`h-20 w-20 object-contain ${!unlocked ? "grayscale opacity-50" : ""}`}
+                  />
                 ) : (
                   <Lock className="h-6 w-6 text-muted-foreground" />
                 )}
