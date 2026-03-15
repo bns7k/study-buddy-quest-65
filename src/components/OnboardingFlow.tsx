@@ -437,7 +437,7 @@ function Scene4({ onSelect }: { onSelect: (g: AvatarGender) => void }) {
 
 function Scene5({ gender, onNext }: { gender: AvatarGender; onNext: () => void }) {
   const avatarEmoji = gender === "male" ? "🧑‍💼" : "👩‍💼";
-  const avatarImage = maleAvatarImg;
+  const avatarImage = gender === "male" ? maleAvatarImg : femaleAvatarImg;
 
   return (
     <VNLayout
