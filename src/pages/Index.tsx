@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, Shield, Heart, ArrowLeft, Lock } from "lucide-react";
+import { Settings, Shield, Heart, ArrowLeft, Lock, MoreHorizontal } from "lucide-react";
 import { GuildCrest } from "@/components/icons/GuildCrest";
 import { StatsBar } from "@/components/StatsBar";
 import { RankBadge } from "@/components/RankBadge";
@@ -48,6 +48,7 @@ const Index = () => {
   const [supportOpen, setSupportOpen] = useState(false);
   const [selectedBuilding, setSelectedBuilding] = useState<string | null>(null);
   const [rankUp, setRankUp] = useState<{ show: boolean }>({ show: false });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const prevRankRef = useRef(getRank(progress.completedLessons.length));
 
   useEffect(() => {
@@ -88,8 +89,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-card/90 backdrop-blur-lg shadow-sm">
-        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2.5">
+        <div className="mx-auto flex w-full max-w-[720px] flex-col items-center gap-2 px-3 py-3 sm:max-w-2xl sm:flex-row sm:items-center sm:justify-between sm:px-4">
+          <div className="flex w-full items-center justify-center gap-2.5 sm:w-auto sm:justify-start">
             {selectedBuilding ? (
               <motion.button
                 initial={{ opacity: 0, x: -10 }}
@@ -117,25 +118,53 @@ const Index = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center justify-center gap-2 sm:w-auto">
             <RankBadge completedCount={progress.completedLessons.length} />
             <StatsBar xp={progress.xp} streak={progress.streak} completedCount={progress.completedLessons.length} />
           </div>
-          <div className="flex gap-1">
+          <div className="relative flex w-full justify-center gap-1 sm:w-auto">
             <button onClick={() => setSupportOpen(true)} className="rounded-xl p-1.5 hover:bg-muted" title="Support the project">
               <Heart className="h-5 w-5 text-muted-foreground" />
             </button>
-            <button onClick={() => navigate("/admin")} className="rounded-xl p-1.5 hover:bg-muted">
+
+            <button
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              className="rounded-xl p-1.5 hover:bg-muted sm:hidden"
+              aria-label="Open more options"
+            >
+              <MoreHorizontal className="h-5 w-5 text-muted-foreground" />
+            </button>
+
+            {mobileMenuOpen && (
+              <div className="absolute right-0 top-10 z-30 flex min-w-[140px] flex-col rounded-xl border border-border/70 bg-card p-1.5 shadow-lg sm:hidden">
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate("/admin"); }}
+                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-muted"
+                >
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                  Admin
+                </button>
+                <button
+                  onClick={() => { setMobileMenuOpen(false); navigate("/settings"); }}
+                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-muted"
+                >
+                  <Settings className="h-4 w-4 text-muted-foreground" />
+                  Settings
+                </button>
+              </div>
+            )}
+
+            <button onClick={() => navigate("/admin")} className="hidden rounded-xl p-1.5 hover:bg-muted sm:inline-flex">
               <Shield className="h-5 w-5 text-muted-foreground" />
             </button>
-            <button onClick={() => navigate("/settings")} className="rounded-xl p-1.5 hover:bg-muted">
+            <button onClick={() => navigate("/settings")} className="hidden rounded-xl p-1.5 hover:bg-muted sm:inline-flex">
               <Settings className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
+      <main className="mx-auto w-full max-w-[720px] px-3 py-5 sm:max-w-2xl sm:px-4 sm:py-6">
         <AnimatePresence mode="wait">
           {!selectedBuilding ? (
             <motion.div
@@ -170,7 +199,7 @@ const Index = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="mt-10"
+                className="mx-auto mt-10 w-full max-w-[680px]"
               >
                 <div className="mb-4 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
@@ -185,7 +214,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
                   {[
                     { name: "Corporate Strategy", subtitle: "M&A & Advisory", emoji: "⚔️" },
                     { name: "Portfolio Management", subtitle: "Markets & Allocation", emoji: "🛡️" },

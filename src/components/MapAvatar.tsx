@@ -7,7 +7,7 @@ interface MapAvatarProps {
 }
 
 export function MapAvatar({ gender, rankLevel }: MapAvatarProps) {
-  const { emoji, label } = getAvatarForRank(gender, rankLevel);
+  const { emoji, label, image } = getAvatarForRank(gender, rankLevel);
 
   return (
     <motion.div
@@ -16,7 +16,11 @@ export function MapAvatar({ gender, rankLevel }: MapAvatarProps) {
       transition={{ repeat: Infinity, duration: 1.5 }}
     >
       <div className="relative">
-        <span className="text-2xl block drop-shadow-md">{emoji}</span>
+        {image ? (
+          <img src={image} alt={`${label} avatar`} className="block h-14 w-14 object-cover drop-shadow-md" />
+        ) : (
+          <span className="text-2xl block drop-shadow-md">{emoji}</span>
+        )}
         {/* Shadow */}
         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-5 rounded-full bg-foreground/10 blur-sm" />
       </div>

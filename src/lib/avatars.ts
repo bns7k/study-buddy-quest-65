@@ -1,3 +1,5 @@
+import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
+
 export type AvatarGender = "male" | "female";
 
 export interface AvatarOutfit {
@@ -17,7 +19,7 @@ export const AVATAR_OUTFITS: AvatarOutfit[] = [
   { rankLevel: 7, label: "Elegant Suit", male: "👑", female: "👑" },
 ];
 
-export function getAvatarForRank(gender: AvatarGender, rankLevel: number): { emoji: string; label: string } {
+export function getAvatarForRank(gender: AvatarGender, rankLevel: number): { emoji: string; label: string; image?: string } {
   let outfit = AVATAR_OUTFITS[0];
   for (const o of AVATAR_OUTFITS) {
     if (rankLevel >= o.rankLevel) outfit = o;
@@ -25,5 +27,6 @@ export function getAvatarForRank(gender: AvatarGender, rankLevel: number): { emo
   return {
     emoji: gender === "male" ? outfit.male : outfit.female,
     label: outfit.label,
+    image: maleAvatarImg,
   };
 }
