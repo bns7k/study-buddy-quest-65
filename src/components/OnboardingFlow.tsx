@@ -5,7 +5,8 @@ import { GuildCrest } from "@/components/icons/GuildCrest";
 import professorImg from "@/assets/professor-aldric.png";
 import { LectureHallIcon, LibraryIcon, MarketYardIcon, ObservatoryIcon } from "@/components/icons/AcademyBuildings";
 import { Lock, SkipForward } from "lucide-react";
-import maleAvatarImg from "@/assets/male-analyst-transparent.svg";
+import maleAvatarImg from "@/assets/male-analyst-character.png";
+import femaleAvatarImg from "@/assets/female-analyst-character.png";
 import { speakMumble, resumeAudio } from "@/lib/professor-voice";
 
 interface OnboardingFlowProps {
